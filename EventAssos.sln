@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventAssos.Api", "EventAssos.Api\EventAssos.Api.csproj", "{2CAEC2F4-48B6-41FC-BDF2-A981A02A62BE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2CAEC2F4-48B6-41FC-BDF2-A981A02A62BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CAEC2F4-48B6-41FC-BDF2-A981A02A62BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CAEC2F4-48B6-41FC-BDF2-A981A02A62BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CAEC2F4-48B6-41FC-BDF2-A981A02A62BE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
