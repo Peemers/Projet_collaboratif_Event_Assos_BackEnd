@@ -1,0 +1,18 @@
+# .NET / Rider
+[Bb]in/
+[Oo]bj/
+.idea/
+*.user
+*.suo
+.vs/
+
+# Angular / Node
+node_modules/
+dist/
+.angular/
+.vscode/
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
