@@ -11,4 +11,13 @@
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.1"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\EventAssos.Core\EventAssos.Core.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Controllers\" />
+      <Folder Include="Middleware\" />
+    </ItemGroup>
+
 </Project>

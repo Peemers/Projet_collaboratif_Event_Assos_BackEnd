@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\EventAssos.Core\EventAssos.Core.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="DataBase\Configurations\" />
+      <Folder Include="DataBase\Context\" />
+      <Folder Include="Repositories\" />
+      <Folder Include="Security\" />
+    </ItemGroup>
+
+</Project>
