@@ -10,4 +10,14 @@
       <ProjectReference Include="..\EventAssos.Domain\EventAssos.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="DTOs\Request\" />
+      <Folder Include="DTOs\Response\" />
+      <Folder Include="Interfaces\Repositories\" />
+      <Folder Include="Interfaces\Services\" />
+      <Folder Include="Interfaces\Tools\" />
+      <Folder Include="Mappers\" />
+      <Folder Include="Services\Datas\Tools\" />
+    </ItemGroup>
+
 </Project>

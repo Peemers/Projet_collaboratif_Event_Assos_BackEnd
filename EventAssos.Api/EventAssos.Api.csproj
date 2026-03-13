@@ -15,4 +15,9 @@
       <ProjectReference Include="..\EventAssos.Core\EventAssos.Core.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Controllers\" />
+      <Folder Include="Middleware\" />
+    </ItemGroup>
+
 </Project>
