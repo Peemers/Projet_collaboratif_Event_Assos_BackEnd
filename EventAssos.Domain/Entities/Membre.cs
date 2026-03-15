@@ -4,7 +4,7 @@ namespace EventAssos.Domain.Entities;
 
 public class Membre
 {
-  public required Guid Id { get; set; } //PK
+  public Guid Id { get; set; } //PK
   public required string Pseudo { get; set; }
   public required string Email { get; set; }
   public required string Password { get; set; }
