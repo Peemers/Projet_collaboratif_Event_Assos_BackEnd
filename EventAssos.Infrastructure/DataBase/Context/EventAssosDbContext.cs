@@ -3,12 +3,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventAssos.Infrastructure.DataBase.Context;
 
-public class EventAssosDbContext : DbContext
+public class EventAssosDbContext(DbContextOptions<EventAssosDbContext> options) : DbContext(options) //primary constructeur
 {
-  public EventAssosDbContext(DbContextOptions<EventAssosDbContext> options) : base(options)
-  {
-  }
-
   public DbSet<Categorie> Categories { get; set; } = null!;
   public DbSet<Evenement> Evenements { get; set; } = null!;
   public DbSet<Inscription> Inscriptions { get; set; } = null!;
@@ -18,5 +14,4 @@ public class EventAssosDbContext : DbContext
   {
     modelBuilder.ApplyConfigurationsFromAssembly(typeof(EventAssosDbContext).Assembly);
   }
-
 }
