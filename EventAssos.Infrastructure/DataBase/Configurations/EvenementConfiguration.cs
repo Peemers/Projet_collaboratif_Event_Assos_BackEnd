@@ -64,7 +64,7 @@ public class EvenementConfiguration : IEntityTypeConfiguration<Evenement>
       .HasForeignKey(i => i.EvenementId) //fk
       .OnDelete(DeleteBehavior.Cascade); //si on supprime un event on supprime aussi les inscriptions
     
-    //relation Evenement <-> Categorie (n,n)
+    //relations Evenement <-> Categorie (n,n)
     
     builder.HasMany(e => e.Categories) // un event possede plusieurs categories
       .WithMany(c => c.Evenements) // une categorie appartient à plusieurs evenements
