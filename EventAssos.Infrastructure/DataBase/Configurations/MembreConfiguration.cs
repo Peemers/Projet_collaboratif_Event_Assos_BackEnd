@@ -29,15 +29,18 @@ public class MembreConfiguration : IEntityTypeConfiguration<Membre>
     builder.Property(m => m.Genre)
       .IsRequired();
     
-    builder.HasIndex(m => m.Pseudo).IsUnique();
-    builder.HasIndex(m => m.Email).IsUnique();
+    builder.Property(m => m.DateNaissance)
+      .HasColumnType("datetime"); //ne devine pas la donnée SQL, la colonne sera d'office une date
+    
+    builder.HasIndex(m => m.Pseudo).IsUnique(); //regle metier : pseudo unique en db
+    builder.HasIndex(m => m.Email).IsUnique(); //regle metier : email unique en db
     
     //Relations
     
-    builder.HasMany( m => m.Inscriptions) // Membre possede plusieurs inscriptions
-      .WithOne( i => i.Membre) // Une inscription par membre
+    builder.HasMany( m => m.Inscriptions) // membre possede plusieurs inscriptions
+      .WithOne( i => i.Membre) // une inscription par membre
       .HasForeignKey(i => i.MembreId)
-      .OnDelete(DeleteBehavior.Cascade); // si on supprime un membre, on supprime ses inscriptions avec.
+      .OnDelete(DeleteBehavior.Cascade); // si on supprime un membre, on supprime ses inscriptions avec
     
   }
   
