@@ -17,7 +17,7 @@ public class RegisterRequestDto
   public required string Email { get; set; }
   
   [Required(ErrorMessage = "Le password est requis")]
-  [RegularExpression(@"^(?=.*[A-Z])(?=.*[!@#$%^&*(),.?"":{}|<>])(?=.{6,16}$).*$")]
+  [RegularExpression(@"^(?=.*[A-Z])(?=.*[!@#$%^&*(),.? "" :{}|<>+=\-])(?=.{6,16}$).*$")]
   [MinLength(6, ErrorMessage = "Taille min du password : 6 caractères")]
   [MaxLength(16, ErrorMessage = "Taille max du password : 16 caractères")]
   [DataType(DataType.Password)]
