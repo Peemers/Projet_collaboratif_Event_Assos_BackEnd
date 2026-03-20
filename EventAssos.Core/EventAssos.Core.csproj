@@ -11,8 +11,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Mappers\" />
-      <Folder Include="Services\Datas\Tools\" />
+      <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.5" />
     </ItemGroup>
 
 </Project>
