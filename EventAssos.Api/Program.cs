@@ -1,4 +1,5 @@
 using System.Text;
+using System.Threading.RateLimiting;
 using EventAssos.Core.Interfaces.Repositories;
 using EventAssos.Core.Interfaces.Services;
 using EventAssos.Core.Interfaces.Tools;
@@ -7,6 +8,7 @@ using EventAssos.Infrastructure.DataBase.Context;
 using EventAssos.Infrastructure.Repositories;
 using EventAssos.Infrastructure.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
@@ -16,9 +18,15 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 #region Injection de dependances
 /*##INJECTION DE DEPENDANCE##*/
 
+#region DbContext
+
 //utilisation de dbcontext
 builder.Services.AddDbContext<EventAssosDbContext>(options =>
   options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
+
+#endregion
+
+#region CORS
 
 //utilisation des cors
 var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>();
@@ -33,11 +41,22 @@ builder.Services.AddCors(option =>
   });
 });
 
+#endregion
+
+#region ServiceEtc
+
 //AddScope -> Une instance par requete
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<IMembreRepository, MembreRepository>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddControllers();
+builder.Services.AddOpenApi();
+
+#endregion
+
+#region JWT
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
   .AddJwtBearer(options =>
   {
@@ -53,8 +72,24 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
     };
   });
-builder.Services.AddControllers();
-builder.Services.AddOpenApi();
+
+#endregion
+
+#region RateLimit
+
+builder.Services.AddRateLimiter(options =>
+{
+  options.AddFixedWindowLimiter("auth-limit", opt =>
+  {
+    opt.PermitLimit = 5;
+    opt.Window = TimeSpan.FromMinutes(1);
+    opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+    opt.QueueLimit = 0;
+  });
+  options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+});
+#endregion
+
 #endregion
 
 var app = builder.Build();
@@ -66,6 +101,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("AllowAngular");
+app.UseRateLimiter();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

@@ -5,11 +5,13 @@ using EventAssos.Core.Interfaces.Services;
 using EventAssos.Core.Interfaces.Tools;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace EventAssos.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[EnableRateLimiting("auth-limit")]
 public class AuthController(IAuthService authService) : ControllerBase
 {
   [HttpPost("register")]
