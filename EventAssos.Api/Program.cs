@@ -1,5 +1,7 @@
+using EventAssos.Core.Interfaces.Repositories;
 using EventAssos.Core.Interfaces.Tools;
 using EventAssos.Infrastructure.DataBase.Context;
+using EventAssos.Infrastructure.Repositories;
 using EventAssos.Infrastructure.Security;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
@@ -28,6 +30,7 @@ builder.Services.AddCors(option =>
 
 //AddScope -> Une instance par requete
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+builder.Services.AddScoped<IMembreRepository, MembreRepository>();
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
