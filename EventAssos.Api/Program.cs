@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 //utilisation de dbcontext
 builder.Services.AddDbContext<EventAssosDbContext>(options =>
-  options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+  options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 
 //utilisation des cors
 var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>();
