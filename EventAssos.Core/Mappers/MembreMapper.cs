@@ -1,5 +1,6 @@
 ﻿using EventAssos.Core.DTOs.Request.MembreRequestDtos;
 using EventAssos.Domain.Entities;
+using EventAssos.Domain.Enums;
 
 namespace EventAssos.Core.Mappers;
 
@@ -15,7 +16,8 @@ public static class MembreMapper
       Password = hashedPassword,
       Genre = dto.Genre,
       DateNaissance = (DateTime)dto.DateNaissance!,
-      DateInscription = DateTime.UtcNow
+      DateInscription = DateTime.UtcNow,
+      Role = Roles.Membre
     };
   }
 }

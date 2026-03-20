@@ -11,6 +11,7 @@ public class Membre
   public required Roles Role { get; set; }
   public required Genres Genre { get; set; }
   public DateTime DateNaissance { get; set; }
+  public DateTime DateInscription { get; set; }
 
   public ICollection<Inscription> Inscriptions { get; set; } = new List<Inscription>();
 }

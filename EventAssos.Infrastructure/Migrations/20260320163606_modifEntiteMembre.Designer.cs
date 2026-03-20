@@ -4,6 +4,7 @@ using EventAssos.Infrastructure.DataBase.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventAssos.Infrastructure.Migrations
 {
     [DbContext(typeof(EventAssosDbContext))]
-    partial class EventAssosDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260320163606_modifEntiteMembre")]
+    partial class modifEntiteMembre
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -199,7 +202,7 @@ namespace EventAssos.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("11111111-1111-1111-1111-111111111111"),
-                            DateInscription = new DateTime(2026, 3, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateInscription = new DateTime(2026, 3, 20, 16, 36, 5, 945, DateTimeKind.Utc).AddTicks(3545),
                             DateNaissance = new DateTime(1978, 8, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@eventassos.com",
                             Genre = 0,
