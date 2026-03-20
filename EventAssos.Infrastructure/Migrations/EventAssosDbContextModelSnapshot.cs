@@ -53,6 +53,28 @@ namespace EventAssos.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Nom = "Concert"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Nom = "Conférence"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Nom = "Atelier"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Nom = "Autres"
+                        });
                 });
 
             modelBuilder.Entity("EventAssos.Domain.Entities.Evenement", b =>
@@ -169,6 +191,18 @@ namespace EventAssos.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("Membres");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("11111111-1111-1111-1111-111111111111"),
+                            DateNaissance = new DateTime(1978, 8, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "admin@eventassos.com",
+                            Genre = 0,
+                            Password = "password",
+                            Pseudo = "MmeDupont",
+                            Role = 1
+                        });
                 });
 
             modelBuilder.Entity("CategorieEvenement", b =>
