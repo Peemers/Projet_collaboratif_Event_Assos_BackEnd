@@ -1,8 +1,10 @@
+using EventAssos.Core.Interfaces.Tools;
 using EventAssos.Infrastructure.DataBase.Context;
+using EventAssos.Infrastructure.Security;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 #region Injection de dependances
 /*##INJECTION DE DEPENDANCE##*/
@@ -23,6 +25,9 @@ builder.Services.AddCors(option =>
       .AllowAnyHeader();
   });
 });
+
+//AddScope -> Une instance par requete
+builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
