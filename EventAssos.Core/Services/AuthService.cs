@@ -12,12 +12,31 @@ namespace EventAssos.Core.Services;
 public class AuthService(
   IMembreRepository membreRepository,
   IPasswordHasher passwordHasher,
-  IConfiguration configuration) : IAuthService
+  IJwtService jwtService) : IAuthService
 {
-  public Task<AuthResponseDto> LoginAsync(LoginRequestDto loginDto)
+  #region LoginAsync
+
+  public async Task<AuthResponseDto> LoginAsync(LoginRequestDto loginDto)
   {
-    throw new NotImplementedException();
+    Membre? membre = await membreRepository.GetByEmailAsync(loginDto.Email);
+
+    if (membre == null || !passwordHasher.Verify(loginDto.Password, membre.Password))
+    {
+      throw new Exception("Identifiants invalides");
+    }
+    
+    string token = jwtService.GenererToken(membre);
+
+    return new AuthResponseDto
+    {
+      Token = token,
+      Pseudo = membre.Pseudo,
+    };
   }
+
+  #endregion
+
+  #region RegisterAsync
 
   public async Task<AuthResponseDto> RegisterAsync(RegisterRequestDto registerDto)
   {
@@ -39,15 +58,19 @@ public class AuthService(
     }
 
     string hashedPassword = passwordHasher.Hash(registerDto.Password);
-
+    
     Membre nouveauMembre = registerDto.ToEntity(hashedPassword);
+
+    string token = jwtService.GenererToken(nouveauMembre);
 
     await membreRepository.AddAsync(nouveauMembre);
 
     return new AuthResponseDto
     {
-      Token = "TOKEN_PROVISOIRE",
+      Token = token,
       Pseudo = registerDto.Pseudo,
     };
   }
+
+  #endregion
 }
