@@ -6,27 +6,33 @@ using EventAssos.Core.Interfaces.Tools;
 using EventAssos.Core.Mappers;
 using EventAssos.Domain.Entities;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace EventAssos.Core.Services;
 
 public class AuthService(
   IMembreRepository membreRepository,
   IPasswordHasher passwordHasher,
-  IJwtService jwtService) : IAuthService
+  IJwtService jwtService,
+  ILogger<AuthService> log) : IAuthService
 {
   #region LoginAsync
 
   public async Task<AuthResponseDto> LoginAsync(LoginRequestDto loginDto)
   {
+    log.LogInformation($"Tentative de connexion de {loginDto.Email}", loginDto);
+    
     Membre? membre = await membreRepository.GetByEmailAsync(loginDto.Email);
 
     if (membre == null || !passwordHasher.Verify(loginDto.Password, membre.Password))
     {
+      log.LogInformation("Connexion échouée : Mauvais identifiant");
       throw new Exception("Identifiants invalides");
     }
     
     string token = jwtService.GenererToken(membre);
-
+    
+    log.LogInformation($"Connexion réussie de {loginDto.Email}, token attribué");
     return new AuthResponseDto
     {
       Token = token,
@@ -44,6 +50,7 @@ public class AuthService(
     {
       throw new ArgumentException("Veuillez entrer toutes les informations requises à l'inscription");
     }
+    
 
     bool emailExiste = await membreRepository.EmailExistsAsync(registerDto.Email);
     if (emailExiste)
