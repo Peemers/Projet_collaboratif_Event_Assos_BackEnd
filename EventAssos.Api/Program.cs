@@ -121,6 +121,15 @@ try
   var app = builder.Build();
 
 
+  #region MiddleWare
+  
+  app.UseHttpsRedirection();
+  
+  app.UseSerilogRequestLogging(options =>
+  {
+    options.MessageTemplate = "HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000} ms";
+  });
+
   if (app.Environment.IsDevelopment())
   {
     app.MapScalarApiReference();
@@ -129,10 +138,12 @@ try
 
   app.UseCors("AllowAngular");
   app.UseRateLimiter();
-  app.UseHttpsRedirection();
+  
   app.UseAuthentication();
   app.UseAuthorization();
   app.MapControllers();
+
+  #endregion
 
   Log.Information("API démarrée et prête");
   app.Run();

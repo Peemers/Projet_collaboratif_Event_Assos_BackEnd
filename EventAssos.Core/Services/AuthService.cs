@@ -46,8 +46,10 @@ public class AuthService(
 
   public async Task<AuthResponseDto> RegisterAsync(RegisterRequestDto registerDto)
   {
+    log.LogInformation($"Tentative d'enregistrement avec : {registerDto.Email}", registerDto);
     if (string.IsNullOrEmpty(registerDto.Email) || string.IsNullOrEmpty(registerDto.Password))
     {
+      //log.LogInformation($"Inscription de : {registerDto.Email} échouée par manque d'informations requises", registerDto);
       throw new ArgumentException("Veuillez entrer toutes les informations requises à l'inscription");
     }
     
@@ -55,19 +57,24 @@ public class AuthService(
     bool emailExiste = await membreRepository.EmailExistsAsync(registerDto.Email);
     if (emailExiste)
     {
+      log.LogInformation($"Inscription échouée de : {registerDto.Email} : Email existe déja en DB", registerDto);
       throw new Exception("Cet email est déja utilisé");
     }
 
     bool pseudoExiste = await membreRepository.PseudoExistsAsync(registerDto.Pseudo);
     if (pseudoExiste)
     {
+      log.LogInformation($"Inscription échouée de : {registerDto.Email} avec pseudo : {registerDto.Pseudo} : Pseudo existe déja en DB", registerDto);
       throw new Exception("Ce pseudo est déja utilisé");
     }
-
+    
+    log.LogInformation($"Inscription de {registerDto.Email} avec pseudo : {registerDto.Pseudo} réussie", registerDto);
     string hashedPassword = passwordHasher.Hash(registerDto.Password);
     
     Membre nouveauMembre = registerDto.ToEntity(hashedPassword);
 
+    
+    log.LogInformation($"Attribution token et connexion de : {registerDto.Email} - {registerDto.Pseudo}");
     string token = jwtService.GenererToken(nouveauMembre);
 
     await membreRepository.AddAsync(nouveauMembre);
