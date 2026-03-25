@@ -26,11 +26,11 @@ public class EvenementService(
         nouvelEvenement.Categories.Add(categorie);
       }
     }
-    Evenement result = await evenementRepository.AddAsync(nouvelEvenement);
+    Evenement evenement = await evenementRepository.AddAsync(nouvelEvenement);
     
-    logger.LogInformation("Événement {Nom} créé avec l'id : {Id}", result.Nom, result.Id);
+    logger.LogInformation("Événement {Nom} créé avec l'id : {Id}", evenement.Nom, evenement.Id);
 
-    return result.ToDetailsResponseDto();
+    return evenement.ToDetailsResponseDto();
   }
 
   public async Task<IEnumerable<EvenementShortResponseDto>> GetLatestAsync()
