@@ -76,6 +76,35 @@ public class InscriptionService(
 
   public async Task AnnulerInscriptionAsync(Guid evenementId, Guid membreId)
   {
-    throw new NotImplementedException();
+    Inscription? inscription = await inscriptionRepository.GetInscriptionExisteAsync(membreId, evenementId);
+    if (inscription == null)
+    {
+      throw new KeyNotFoundException("Impossible d'annulé : inscription introuvable");
+    }
+    bool etaitEnAttente = inscription.EstEnAttente;
+    Guid ASupprimer = inscription.Id;
+    
+    await inscriptionRepository.DeleteAsync(ASupprimer);
+    logger.LogInformation("inscription {id} supprimée", ASupprimer);
+
+    if (!etaitEnAttente)
+    {
+      Evenement? evenement = await evenementRepository.GetAvecDetailsAsync(evenementId);
+      if (evenement != null)
+      {
+        Inscription? prochainAttente = evenement.Inscriptions
+          .Where(i => i.EstEnAttente)
+          .OrderBy(i => i.InscriptionDate)
+          .FirstOrDefault();
+
+        if (prochainAttente != null)
+        {
+          prochainAttente.EstEnAttente = false;
+          await inscriptionRepository.UpdateAsync(prochainAttente);
+          
+          logger.LogInformation("Le membre {MembreId} est promu en liste principale pour l'événement {EvenementId}", prochainAttente.MembreId, evenement.Id);
+        }
+      }
+    }
   }
 }
