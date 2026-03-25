@@ -14,6 +14,8 @@ namespace EventAssos.Controllers;
 public class EvenementController(IEvenementService evenementService) : ControllerBase
 {
 
+  #region Create
+
   [HttpPost]
   [Authorize(Roles = "Admin")]
   public async Task<ActionResult<EvenementDetailsResponseDto>> Create(EvenementRequestDto dto)
@@ -29,6 +31,10 @@ public class EvenementController(IEvenementService evenementService) : Controlle
     }
   }
 
+  #endregion
+
+  #region GetLatest
+
   [HttpGet("latest")]
   [AllowAnonymous]
   public async Task<ActionResult<IEnumerable<EvenementShortResponseDto>>> GetLatest()
@@ -36,7 +42,11 @@ public class EvenementController(IEvenementService evenementService) : Controlle
     IEnumerable<EvenementShortResponseDto> result = await evenementService.GetLatestAsync();
     return Ok(result);
   }
-  
+
+  #endregion
+
+  #region GetById
+
   [HttpGet("{id:guid}")]
   [AllowAnonymous]
   public async Task<ActionResult<EvenementDetailsResponseDto>> GetById(Guid id)
@@ -51,5 +61,7 @@ public class EvenementController(IEvenementService evenementService) : Controlle
       return NotFound(new { message = ex.Message });
     }
   }
+
+  #endregion
 }
 

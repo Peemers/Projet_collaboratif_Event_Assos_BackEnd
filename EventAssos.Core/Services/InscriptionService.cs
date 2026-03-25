@@ -14,6 +14,8 @@ public class InscriptionService(
   IMembreRepository membreRepository,
   ILogger<InscriptionService> logger) : IInscriptionService
 {
+  #region InscrireMembre
+
   public async Task<EvenementDetailsResponseDto> InscrireMembreAsync(Guid evenementId, Guid membreId)
   {
     Evenement? evenement = await evenementRepository.GetAvecDetailsAsync(evenementId);
@@ -74,6 +76,10 @@ public class InscriptionService(
     return evenement.ToDetailsResponseDto();
   }
 
+  #endregion
+
+  #region AnnulerInscription
+
   public async Task AnnulerInscriptionAsync(Guid evenementId, Guid membreId)
   {
     Inscription? inscription = await inscriptionRepository.GetInscriptionExisteAsync(membreId, evenementId);
@@ -107,4 +113,6 @@ public class InscriptionService(
       }
     }
   }
+
+  #endregion
 }

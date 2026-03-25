@@ -1,4 +1,5 @@
-﻿using EventAssos.Core.DTOs.Response.EvenementResponseDtos;
+﻿using System.Security.Claims;
+using EventAssos.Core.DTOs.Response.EvenementResponseDtos;
 using EventAssos.Core.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,11 +11,13 @@ namespace EventAssos.Controllers;
 [Route("api/[controller]")]
 public class InscriptionController(IInscriptionService inscriptionService, ILogger<InscriptionController> logger) : ControllerBase
 {
+  #region CreateInscription
+
   [HttpPost("{evenementId:guid}")]
   [Authorize(Roles = "Membre")]
   public async Task<ActionResult<EvenementDetailsResponseDto>> CreateInscription(Guid evenementId)
   {
-    string? membreClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+    string? membreClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
     if (string.IsNullOrEmpty(membreClaim))
     {
@@ -39,11 +42,15 @@ public class InscriptionController(IInscriptionService inscriptionService, ILogg
     }
   }
 
+  #endregion
+
+  #region DeleteInscription
+
   [HttpDelete("{evenementId:guid}")]
   [Authorize(Roles = "Membre")]
   public async Task<IActionResult> DeleteInscription(Guid evenementId)
   {
-    string? membreClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+    string? membreClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
     if (string.IsNullOrEmpty(membreClaim))
     {
       return Unauthorized("Utilisateur non identifié dans le token");
@@ -66,4 +73,6 @@ public class InscriptionController(IInscriptionService inscriptionService, ILogg
       return BadRequest(ex.Message); 
     }
   }
+
+  #endregion
 }

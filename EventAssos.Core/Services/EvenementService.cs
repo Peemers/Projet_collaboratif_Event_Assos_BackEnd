@@ -13,6 +13,8 @@ public class EvenementService(
   ICategorieRepository categorieRepository,
   ILogger<EvenementService> logger) : IEvenementService
 {
+  #region CreateAsync
+
   public async Task<EvenementDetailsResponseDto> CreateAsync(EvenementRequestDto dto)
   {
     ValidationRegles(dto);
@@ -33,6 +35,10 @@ public class EvenementService(
     return evenement.ToDetailsResponseDto();
   }
 
+  #endregion
+
+  #region GetLatestAsync
+
   public async Task<IEnumerable<EvenementShortResponseDto>> GetLatestAsync()
   {
     IEnumerable<Evenement> evenements = await evenementRepository.GetFilterTenLatestAsync();
@@ -50,6 +56,10 @@ public class EvenementService(
     return result.ToDetailsResponseDto();
   }
 
+  #endregion
+
+  #region Methode ValidationRegle
+  
   private void ValidationRegles(EvenementRequestDto dto)
   {
     if (dto.NbMin > dto.NbMax)
@@ -66,4 +76,6 @@ public class EvenementService(
     if (dto.DateLimiteInscription > dto.DateDebut)
       throw new Exception("La date limite d'inscription ne peut pas être après la date de début de l'événement");
   }
+
+  #endregion
 }
