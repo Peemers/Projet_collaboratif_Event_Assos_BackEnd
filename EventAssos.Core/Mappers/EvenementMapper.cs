@@ -48,4 +48,35 @@ public static class EvenementMapper
       ListeAttenteActive = evenement.ListeAttenteActive,
     };
   }
+
+  public static EvenementDetailsResponseDto ToDetailsResponseDto(this Evenement evenement)
+  {
+    return new EvenementDetailsResponseDto()
+    {
+      Id = evenement.Id,
+      Nom = evenement.Nom,
+      Description = evenement.Description,
+      Lieu = evenement.Lieu,
+      DateDebut = evenement.DateDebut,
+      DateFin = evenement.DateFin,
+      NbMin = evenement.NbMin,
+      NbMax = evenement.NbMax,
+      Statut = evenement.StatutEvenement.ToString(),
+      Categories = evenement.Categories.Select(c => c.Nom).ToList(),
+      ListeAttenteActive = evenement.ListeAttenteActive,
+      DateLimiteInscription = evenement.DateLimiteInscription,
+
+      MembresInscrits = evenement.Inscriptions
+        .Where(i => !i.EstEnAttente)
+        .OrderBy(i => i.InscriptionDate)
+        .Select(i => i.Membre.Pseudo)
+          .ToList(),
+      
+      ListeAttente = evenement.Inscriptions
+        .Where(i => i.EstEnAttente)
+        .OrderBy(i => i.InscriptionDate)
+        .Select(i => i.Membre.Pseudo)
+          .ToList(),
+    };
+  }
 }
