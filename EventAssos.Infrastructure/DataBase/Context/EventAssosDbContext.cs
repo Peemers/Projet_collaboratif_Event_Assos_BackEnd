@@ -34,6 +34,7 @@ public class EventAssosDbContext(DbContextOptions<EventAssosDbContext> options) 
         Role = Roles.Admin,
         Genre = Genres.Femme,
         DateNaissance = new DateTime(1978, 8, 13),
+        DateInscription = new DateTime(2026, 03, 20),
       }
     );
   }
