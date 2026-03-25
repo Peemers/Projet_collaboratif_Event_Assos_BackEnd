@@ -49,6 +49,7 @@ public class AuthService(
     log.LogInformation($"Tentative d'enregistrement avec : {registerDto.Email}", registerDto);
     if (string.IsNullOrEmpty(registerDto.Email) || string.IsNullOrEmpty(registerDto.Password))
     {
+      //log.LogInformation($"Inscription de : {registerDto.Email} échouée par manque d'informations requises", registerDto);
       throw new ArgumentException("Veuillez entrer toutes les informations requises à l'inscription");
     }
 
