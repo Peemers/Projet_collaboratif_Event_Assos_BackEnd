@@ -13,7 +13,7 @@ public class EvenementRepository(EventAssosDbContext context) : BaseRepository<E
     return await context.Evenements
       .Include(e => e.Categories)
       .Include(e => e.Inscriptions)
-      .Where(e => e.StatutEvenement != StatutEvenement.Terminé && e.StatutEvenement == StatutEvenement.Annulé)
+      .Where(e => e.StatutEvenement != StatutEvenement.Terminé && e.StatutEvenement != StatutEvenement.Annulé)
       .OrderByDescending(e => e.DateMaj)
       .Take(10)
       .ToListAsync();

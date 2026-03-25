@@ -8,11 +8,22 @@ public class InscriptionConfiguration : IEntityTypeConfiguration<Inscription>
 {
   public void Configure(EntityTypeBuilder<Inscription> builder)
   {
-    builder.HasKey(i => new {i.MembreId, i.EvenementId}); //PK composite : une ligne avec deux identifiants
-
+    
+    builder.HasKey(i => i.Id);
+    
+    builder.HasOne(i => i.Membre)
+      .WithMany(m => m.Inscriptions)
+      .HasForeignKey(i => i.MembreId)
+      .OnDelete(DeleteBehavior.Cascade);
+    
+    builder.HasOne(i => i.Evenement)
+      .WithMany(e => e.Inscriptions)
+      .HasForeignKey(i => i.EvenementId)
+      .OnDelete(DeleteBehavior.Cascade);
+    
+    builder.HasIndex(i => new { i.MembreId, i.EvenementId }).IsUnique();
+    
     builder.Property(i => i.InscriptionDate)
-      .IsRequired();
-    builder.Property(i => i.EstEnAttente)
       .IsRequired();
   }
 }
