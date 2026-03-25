@@ -40,6 +40,16 @@ public class EvenementService(
     return evenements.Select(e => e.ToShortResponseDto());
   }
 
+  public async Task<EvenementDetailsResponseDto> GetByIdAsync(Guid id)
+  {
+    Evenement? result = await evenementRepository.GetAvecDetailsAsync(id);
+    if (result == null)
+    {
+      throw new KeyNotFoundException("L'événement demandé n'existe pas");
+    }
+    return result.ToDetailsResponseDto();
+  }
+
   private void ValidationRegles(EvenementRequestDto dto)
   {
     if (dto.NbMin > dto.NbMax)
