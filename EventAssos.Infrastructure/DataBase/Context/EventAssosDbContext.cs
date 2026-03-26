@@ -22,7 +22,7 @@ public class EventAssosDbContext(DbContextOptions<EventAssosDbContext> options) 
       new Categorie { Id = 4, Nom = "Autres" }
       );
 
-    var adminGuid = Guid.Parse("11111111-1111-1111-1111-111111111111");
+    Guid adminGuid = Guid.Parse("11111111-1111-1111-1111-111111111111");
 
     modelBuilder.Entity<Membre>().HasData(
       new Membre

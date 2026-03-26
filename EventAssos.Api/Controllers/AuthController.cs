@@ -14,6 +14,8 @@ namespace EventAssos.Controllers;
 [EnableRateLimiting("auth-limit")]
 public class AuthController(IAuthService authService) : ControllerBase
 {
+  #region Register
+
   [HttpPost("register")]
   public async Task<ActionResult<AuthResponseDto>> RegisterAsync(RegisterRequestDto registerDto)
   {
@@ -28,6 +30,10 @@ public class AuthController(IAuthService authService) : ControllerBase
     }
   }
 
+  #endregion
+
+  #region Login
+
   [HttpPost("login")]
   public async Task<ActionResult<AuthResponseDto>> LoginAsync(LoginRequestDto loginDto)
   {
@@ -41,4 +47,6 @@ public class AuthController(IAuthService authService) : ControllerBase
       return Unauthorized(e.Message);
     }
   }
+
+  #endregion
 }

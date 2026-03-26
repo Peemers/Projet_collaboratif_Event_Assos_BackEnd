@@ -2,6 +2,7 @@
 
 public class Inscription
 {
+  public required Guid Id { get; set; }
   public required Guid MembreId { get; set; } //fk
   public Membre Membre { get; set; } = null!;
   

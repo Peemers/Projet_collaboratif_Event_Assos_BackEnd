@@ -13,7 +13,7 @@ public class Evenement
   public int NbMin { get; set; }
   public int NbMax { get; set; }
   public StatutEvenement StatutEvenement { get; set; }
-  public required bool ListeAttenteActive { get; set; }
+  public bool ListeAttenteActive { get; set; }
   public DateTime DateLimiteInscription { get; set; }
   public DateTime DateDeCreation { get; set; }
   public DateTime DateMaj { get; set; }

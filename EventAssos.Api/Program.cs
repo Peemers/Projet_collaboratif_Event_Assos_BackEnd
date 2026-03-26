@@ -62,6 +62,12 @@ try
   #region ServiceEtc
 
   //AddScope -> Une instance par requete
+  builder.Services.AddScoped<IInscriptionRepository, InscriptionRepository>();
+  builder.Services.AddScoped<IInscriptionService, InscriptionService>();
+  builder.Services.AddScoped<ICategorieRepository, CategorieRepository>();
+  builder.Services.AddScoped<IEvenementRepository, EvenementRepository>();
+  builder.Services.AddScoped<IEvenementService, EvenementService>();
+  
   builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
   builder.Services.AddScoped<IMembreRepository, MembreRepository>();
   builder.Services.AddScoped<IJwtService, JwtService>();

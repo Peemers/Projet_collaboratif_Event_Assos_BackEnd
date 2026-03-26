@@ -9,17 +9,17 @@ public class MembreRepository(EventAssosDbContext context) : BaseRepository<Memb
 {
   public async Task<Membre?> GetByEmailAsync(string email)
   {
-    return await context.Membres
+    return await Context.Membres
       .FirstOrDefaultAsync(m => m.Email == email);
   }
 
   public async Task<bool> EmailExistsAsync(string email)
   {
-    return await context.Membres.AnyAsync(m => m.Email == email);
+    return await Context.Membres.AnyAsync(m => m.Email == email);
   }
 
   public async Task<bool> PseudoExistsAsync(string pseudo)
   {
-    return await context.Membres.AnyAsync(m => m.Pseudo == pseudo);
+    return await Context.Membres.AnyAsync(m => m.Pseudo == pseudo);
   }
 }
