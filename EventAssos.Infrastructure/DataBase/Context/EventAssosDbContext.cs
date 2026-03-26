@@ -30,7 +30,7 @@ public class EventAssosDbContext(DbContextOptions<EventAssosDbContext> options) 
         Id = adminGuid,
         Pseudo = "MmeDupont",
         Email = "admin@eventassos.com",
-        Password = "$2a$11$0n/bZzK2T6K.wXyA3YtM.OR8.6.T.wXyA3YtM.OR8.6.T.wXyA3YtM.O",
+        Password = "Test1234=!",
         Role = Roles.Admin,
         Genre = Genres.Femme,
         DateNaissance = new DateTime(1978, 8, 13),
