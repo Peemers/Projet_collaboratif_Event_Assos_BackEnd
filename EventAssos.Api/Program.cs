@@ -45,7 +45,7 @@ try
   #region CORS
 
   //utilisation des cors
-  var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>();
+  var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
 
   builder.Services.AddCors(option =>
   {
