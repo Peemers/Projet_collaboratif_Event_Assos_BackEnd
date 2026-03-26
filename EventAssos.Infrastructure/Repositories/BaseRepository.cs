@@ -6,7 +6,9 @@ namespace EventAssos.Infrastructure.Repositories;
 
 public class BaseRepository<T, TId>(EventAssosDbContext context) : IBaseRepository<T, TId> where T : class
 {
-  private DbSet<T> _entities => context.Set<T>();
+  private DbSet<T> _entities => Context.Set<T>();
+
+  protected readonly EventAssosDbContext Context = context;
 
   public async Task<IEnumerable<T>> GetAllAsync()
   {
@@ -21,14 +23,14 @@ public class BaseRepository<T, TId>(EventAssosDbContext context) : IBaseReposito
   public async Task<T> AddAsync(T entity)
   {
     await _entities.AddAsync(entity);
-    await context.SaveChangesAsync();
+    await Context.SaveChangesAsync();
     return entity;
   }
 
   public async Task<T> UpdateAsync(T entity)
   {
     _entities.Update(entity);
-    await context.SaveChangesAsync();
+    await Context.SaveChangesAsync();
     return entity;
   }
 
@@ -38,7 +40,7 @@ public class BaseRepository<T, TId>(EventAssosDbContext context) : IBaseReposito
     if (entity != null)
     {
       _entities.Remove(entity);
-      await context.SaveChangesAsync();
+      await Context.SaveChangesAsync();
     }
   }
 }

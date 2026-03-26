@@ -10,7 +10,7 @@ public class EvenementRepository(EventAssosDbContext context) : BaseRepository<E
 {
   public async Task<IEnumerable<Evenement>> GetFilterTenLatestAsync()
   {
-    return await context.Evenements
+    return await Context.Evenements
       .Include(e => e.Categories)
       .Include(e => e.Inscriptions)
       .Where(e => e.StatutEvenement != StatutEvenement.Terminé && e.StatutEvenement != StatutEvenement.Annulé)
@@ -21,7 +21,7 @@ public class EvenementRepository(EventAssosDbContext context) : BaseRepository<E
 
   public async Task<Evenement?> GetAvecDetailsAsync(Guid id)
   {
-    return await context.Evenements
+    return await Context.Evenements
       .Include(e => e.Categories)
       .Include(e => e.Inscriptions)
       .ThenInclude(i => i.Membre)

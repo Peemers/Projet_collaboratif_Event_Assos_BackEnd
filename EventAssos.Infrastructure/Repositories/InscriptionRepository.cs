@@ -9,7 +9,7 @@ public class InscriptionRepository(EventAssosDbContext context) : BaseRepository
 {
   public async Task<Inscription?> GetInscriptionExisteAsync(Guid membreId, Guid evenementId)
   {
-    Inscription? inscription = await context.Inscriptions
+    Inscription? inscription = await Context.Inscriptions
       .FirstOrDefaultAsync(i => i.MembreId == membreId && i.EvenementId == evenementId);
     
     return inscription;
