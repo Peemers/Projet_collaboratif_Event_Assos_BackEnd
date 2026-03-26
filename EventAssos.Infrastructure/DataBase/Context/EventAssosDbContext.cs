@@ -17,7 +17,7 @@ public class EventAssosDbContext(DbContextOptions<EventAssosDbContext> options) 
     modelBuilder.ApplyConfigurationsFromAssembly(typeof(EventAssosDbContext).Assembly);
 
     var passwordHasher = new PasswordHasher();
-    string hashedAdminPassword = passwordHasher.Hash("Test1234@");
+    string hashedAdminPassword = "$2a$11$MUHgZCCeSF4CY13n9kA4EeMatlqokJqxwp8gEUZGd8NEPBkVqhKJ2";
 
     modelBuilder.Entity<Categorie>().HasData(
       new Categorie { Id = 1, Nom = "Concert" },
@@ -38,7 +38,7 @@ public class EventAssosDbContext(DbContextOptions<EventAssosDbContext> options) 
         Role = Roles.Admin,
         Genre = Genres.Femme,
         DateNaissance = new DateTime(1978, 8, 13),
-        DateInscription = new DateTime(2026, 03, 20),
+        DateInscription = new DateTime(2026, 03, 26),
       }
     );
   }

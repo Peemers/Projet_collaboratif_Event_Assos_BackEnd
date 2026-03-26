@@ -29,8 +29,8 @@ public class EvenementRequestDto
   
   public bool ListeAttenteActive { get; set; }
   
-  [Required(ErrorMessage = "La date d'inscription est obligatoire")]
-  public DateTime DateInscription { get; set; }
+  // [Required(ErrorMessage = "La date d'inscription est obligatoire")]
+  // public DateTime DateInscription { get; set; }
   
   [Required(ErrorMessage = "La date de limite d'inscription est obligatoire")]
   public DateTime DateLimiteInscription { get; set; }
