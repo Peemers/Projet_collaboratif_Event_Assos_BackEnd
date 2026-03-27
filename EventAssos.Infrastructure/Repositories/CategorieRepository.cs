@@ -9,7 +9,7 @@ public class CategorieRepository(EventAssosDbContext context) : BaseRepository<C
 {
   public async Task<bool> ExistByNameAsync(string nom)
   {
-    return await context.Categories
+    return await Context.Categories
       .AnyAsync(c => c.Nom.ToLower() == nom.ToLower());
   }
 }

@@ -26,6 +26,7 @@ public class CategorieService(ICategorieRepository categorieRepository, ILogger<
   {
     if (await categorieRepository.ExistByNameAsync(dto.Nom))
     {
+      logger.LogInformation("Impossible de créer la categorie {nom} deja existante", dto.Nom);
       throw new Exception($"Une categorie avec le nom {dto.Nom} existe deja");
     }
     Categorie entity = dto.ToEntity();
@@ -38,11 +39,23 @@ public class CategorieService(ICategorieRepository categorieRepository, ILogger<
 
   public async Task UpdateAsync(int id, CategorieRequestDto dto)
   {
-    
+    Categorie? categorie = await categorieRepository.GetByIdAsync(id);
+    if (categorie == null)
+    {
+      logger.LogInformation("Mise à jour impossible : Categorie non trouvée");
+      throw new KeyNotFoundException("Categorie non trouvée");
+    }
+    categorie.Nom = dto.Nom;
+    await categorieRepository.UpdateAsync(categorie);
+    logger.LogInformation("Impossible de mettre à jour la categorie {nom} n'existe pas ", dto.Nom);
   }
 
   public async Task DeleteAsync(int id)
   {
+    Categorie? categorie = await categorieRepository.GetByIdAsync(id);
+    if (categorie == null) throw new Exception("Suppression impossible : categorie n'existe pas");
+    await categorieRepository.DeleteAsync(id);
+    logger.LogWarning("Categorie {nom} supprimée", categorie.Nom);
     
   }
 }

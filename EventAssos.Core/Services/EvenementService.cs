@@ -68,7 +68,7 @@ public class EvenementService(
     }
 
     if (dto.DateDebut <= DateTime.UtcNow)
-      throw new Exception("L'évenement doit commencer dans le futur");
+      throw new Exception("L'événement doit commencer dans le futur");
 
     if (dto.DateFin <= dto.DateDebut)
       throw new Exception("La date de fin doit être postérieure à la date de début");
