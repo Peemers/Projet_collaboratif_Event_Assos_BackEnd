@@ -41,6 +41,19 @@ public class AuthServiceTesting
   }
 
   [Fact]
+  public async Task LoginAsync_PasswordIncorrect_ReturnsError()
+  {
+    LoginRequestDto loginDto = new LoginRequestDto { Email = "test@test.be", Password = "WrongPassword" };
+    Membre membre = new Membre{Email = "test@test.com", Password = "HashedPassword", Pseudo = "Tester", Genre =  Genres.Homme, Role = Roles.Membre};
+    
+    _membreRepository.GetByEmailAsync(loginDto.Email).Returns(membre);
+    _passwordHasher.Verify(loginDto.Password, membre.Password).Returns(false);
+    
+    await Assert.ThrowsAsync<Exception>(() => _authService.LoginAsync(loginDto));
+    _jwtService.DidNotReceive().GenererToken(Arg.Any<Membre>());
+  }
+
+  [Fact]
   public async Task RegisterAsync_ReturnToken_RegisterOk()
   {
     RegisterRequestDto registerDto = new RegisterRequestDto{
