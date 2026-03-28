@@ -4,6 +4,7 @@ using EventAssos.Core.Interfaces.Repositories;
 using EventAssos.Core.Interfaces.Services;
 using EventAssos.Core.Mappers;
 using EventAssos.Domain.Entities;
+using EventAssos.Domain.Enums;
 using Microsoft.Extensions.Logging;
 
 namespace EventAssos.Core.Services;
@@ -28,9 +29,43 @@ public class EvenementService(
         nouvelEvenement.Categories.Add(categorie);
       }
     }
+
     Evenement evenement = await evenementRepository.AddAsync(nouvelEvenement);
-    
+
     logger.LogInformation("Événement {Nom} créé avec l'id : {Id}", evenement.Nom, evenement.Id);
+
+    return evenement.ToDetailsResponseDto();
+  }
+
+  #endregion
+
+  #region UpdateAsync
+
+  public async Task<EvenementDetailsResponseDto> UpdateAsync(Guid id, EvenementRequestDto dto)
+  {
+    Evenement? evenement = await evenementRepository.GetAvecDetailsAsync(id);
+
+    if (evenement == null) throw new KeyNotFoundException("L'événement demandé n'existe pas");
+    if (evenement.StatutEvenement != StatutEvenement.EnAttente) throw new Exception("Seuls les événement tagués en attente peuvent etre modifiés");
+
+    int nbInscrit = evenement.Inscriptions.Count(i => !i.EstEnAttente);
+    if (dto.NbMax < nbInscrit)
+    {
+      throw new Exception($"Impossible de reduire le nombre max à {dto.NbMax} car il y a deja {nbInscrit} inscrits");
+    }
+
+    ValidationRegles(dto);
+    evenement.UpdateEntity(dto);
+    evenement.Categories.Clear();
+    foreach (int catId in dto.CategorieIds)
+    {
+      Categorie? categorie = await categorieRepository.GetByIdAsync(catId);
+      if (categorie != null) throw new KeyNotFoundException("Catégorie non trouvée");
+        evenement.Categories.Add(categorie);
+    }
+
+    await evenementRepository.UpdateAsync(evenement);
+    logger.LogInformation("Evénement {Id} mis à jour par l'admin", id);
 
     return evenement.ToDetailsResponseDto();
   }
@@ -53,13 +88,14 @@ public class EvenementService(
     {
       throw new KeyNotFoundException("L'événement demandé n'existe pas");
     }
+
     return result.ToDetailsResponseDto();
   }
 
   #endregion
 
   #region Methode ValidationRegle
-  
+
   private void ValidationRegles(EvenementRequestDto dto)
   {
     if (dto.NbMin > dto.NbMax)

@@ -8,4 +8,5 @@ public interface IEvenementService
   Task<EvenementDetailsResponseDto> CreateAsync(EvenementRequestDto dto);
   Task<IEnumerable<EvenementShortResponseDto>> GetLatestAsync();
   Task<EvenementDetailsResponseDto> GetByIdAsync(Guid id);
+  Task<EvenementDetailsResponseDto> UpdateAsync(Guid id, EvenementRequestDto dto);
 }
