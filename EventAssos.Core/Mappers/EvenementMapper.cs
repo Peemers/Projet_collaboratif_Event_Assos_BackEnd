@@ -23,7 +23,9 @@ public static class EvenementMapper
       DateLimiteInscription = dto.DateLimiteInscription,
       StatutEvenement = StatutEvenement.EnAttente, //pour l'énoncé 
       DateDeCreation = DateTime.UtcNow,
-      DateMaj = DateTime.UtcNow
+      DateMaj = DateTime.UtcNow,
+      Categories = new List<Categorie>(),
+      Inscriptions = new List<Inscription>()
     };
   }
 
