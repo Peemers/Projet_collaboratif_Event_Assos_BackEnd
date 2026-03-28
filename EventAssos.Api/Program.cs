@@ -108,6 +108,13 @@ try
       opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
       opt.QueueLimit = 0;
     });
+    options.AddFixedWindowLimiter("RateLimitAdmin", opt =>
+    {
+      opt.PermitLimit = 10;
+      opt.Window = TimeSpan.FromMinutes(1);
+      opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+      opt.QueueLimit = 0;
+    });
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
   });
 

@@ -3,6 +3,7 @@ using EventAssos.Core.DTOs.Response.EvenementResponseDtos;
 using EventAssos.Core.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace EventAssos.Controllers;
 
@@ -11,19 +12,22 @@ namespace EventAssos.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 [Authorize]
-public class EvenementController(IEvenementService evenementService) : ControllerBase
+public class EvenementController(IEvenementService evenementService, ILogger<EvenementController> logger) : ControllerBase
 {
 
   #region Create
 
   [HttpPost]
   [Authorize(Roles = "Admin")]
+  [EnableRateLimiting("RateLimitAdmin")]
   public async Task<ActionResult<EvenementDetailsResponseDto>> Create(EvenementRequestDto dto)
   {
     try
     {
       EvenementDetailsResponseDto result = await evenementService.CreateAsync(dto);
+      logger.LogInformation("Nouvelle Categorie : {nom} avec l'id : {id} créée en DB",result.Nom, result.Id);
       return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+      
     }
     catch (Exception ex)
     {
@@ -37,6 +41,7 @@ public class EvenementController(IEvenementService evenementService) : Controlle
 
   [HttpGet("latest")]
   [AllowAnonymous]
+  [EnableRateLimiting("auth-limit")]
   public async Task<ActionResult<IEnumerable<EvenementShortResponseDto>>> GetLatest()
   {
     IEnumerable<EvenementShortResponseDto> result = await evenementService.GetLatestAsync();
@@ -49,6 +54,7 @@ public class EvenementController(IEvenementService evenementService) : Controlle
 
   [HttpGet("{id:guid}")]
   [AllowAnonymous]
+  [EnableRateLimiting("auth-limit")]
   public async Task<ActionResult<EvenementDetailsResponseDto>> GetById(Guid id)
   {
     try

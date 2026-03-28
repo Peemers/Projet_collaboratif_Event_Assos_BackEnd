@@ -3,6 +3,7 @@ using EventAssos.Core.DTOs.Response.EvenementResponseDtos;
 using EventAssos.Core.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace EventAssos.Controllers;
 
@@ -15,6 +16,7 @@ public class InscriptionController(IInscriptionService inscriptionService, ILogg
 
   [HttpPost("{evenementId:guid}")]
   [Authorize(Roles = "Membre")]
+  [EnableRateLimiting("auth-limit")]
   public async Task<ActionResult<EvenementDetailsResponseDto>> CreateInscription(Guid evenementId)
   {
     string? membreClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -48,6 +50,7 @@ public class InscriptionController(IInscriptionService inscriptionService, ILogg
 
   [HttpDelete("{evenementId:guid}")]
   [Authorize(Roles = "Membre")]
+  [EnableRateLimiting("auth-limit")]
   public async Task<IActionResult> DeleteInscription(Guid evenementId)
   {
     string? membreClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
