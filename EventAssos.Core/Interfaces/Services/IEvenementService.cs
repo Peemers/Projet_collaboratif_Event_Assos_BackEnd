@@ -12,4 +12,5 @@ public interface IEvenementService
   Task DeleteAsync(Guid id);
   Task DemarrerAsync(Guid id);
   Task CloturerAsync(Guid id);
+  Task AnnulerAsync(Guid id);
 }
