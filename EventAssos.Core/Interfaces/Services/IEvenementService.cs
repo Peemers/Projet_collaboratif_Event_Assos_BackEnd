@@ -9,4 +9,5 @@ public interface IEvenementService
   Task<IEnumerable<EvenementShortResponseDto>> GetLatestAsync();
   Task<EvenementDetailsResponseDto> GetByIdAsync(Guid id);
   Task<EvenementDetailsResponseDto> UpdateAsync(Guid id, EvenementRequestDto dto);
+  Task DeleteAsync(Guid id);
 }

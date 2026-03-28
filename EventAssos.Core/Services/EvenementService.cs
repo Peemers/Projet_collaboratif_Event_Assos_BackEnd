@@ -60,14 +60,28 @@ public class EvenementService(
     foreach (int catId in dto.CategorieIds)
     {
       Categorie? categorie = await categorieRepository.GetByIdAsync(catId);
-      if (categorie != null) throw new KeyNotFoundException("Catégorie non trouvée");
-        evenement.Categories.Add(categorie);
+      if (categorie == null) throw new KeyNotFoundException("Catégorie non trouvée");
+
+      evenement.Categories.Add(categorie);
     }
 
     await evenementRepository.UpdateAsync(evenement);
     logger.LogInformation("Evénement {Id} mis à jour par l'admin", id);
 
     return evenement.ToDetailsResponseDto();
+  }
+
+  #endregion
+
+  #region DeleteAsync
+
+  public async Task DeleteAsync(Guid id)
+  {
+    Evenement? evenement = await evenementRepository.GetByIdAsync(id);
+    if (evenement == null) throw new KeyNotFoundException("L'événement n'existe pas");
+    if (evenement.StatutEvenement != StatutEvenement.EnAttente) throw new Exception("Suppression disponible uniquement sur les événements en attente");
+    await evenementRepository.DeleteAsync(id);
+    logger.LogInformation("L'événement {nom} avec l'id : {Id} a été supprimé", evenement.Nom, evenement.Id);
   }
 
   #endregion
@@ -93,6 +107,8 @@ public class EvenementService(
   }
 
   #endregion
+  
+  
 
   #region Methode ValidationRegle
 
