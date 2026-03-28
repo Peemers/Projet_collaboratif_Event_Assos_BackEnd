@@ -107,8 +107,35 @@ public class EvenementService(
   }
 
   #endregion
-  
-  
+
+  public async Task DemarrerAsync(Guid id)
+  {
+    Evenement? evenement = await evenementRepository.GetAvecDetailsAsync(id);
+
+    if (evenement == null) throw new KeyNotFoundException("L'événement est introuvable");
+    int nbInscrit = evenement.Inscriptions.Count(i => !i.EstEnAttente);
+    
+    if (evenement.StatutEvenement != StatutEvenement.EnAttente) throw new Exception("Seul un événement en 'attente' peut etre démarré");
+    if (evenement.DateDebut > DateTime.UtcNow) throw new Exception($"L'événement ne peut pas démarrer avant le {evenement.DateDebut}");
+    if (nbInscrit < evenement.NbMin) throw new Exception($"Le nombre minimum de participants : {evenement.NbMin} n'est pas atteint. Actuellement : {nbInscrit}");
+
+    evenement.StatutEvenement = StatutEvenement.EnCours;
+    evenement.DateMaj = DateTime.UtcNow;
+    await evenementRepository.UpdateAsync(evenement);
+    logger.LogInformation("L'événement {id} est maintenant EN COURS", id);
+  }
+
+  public async Task CloturerAsync(Guid id)
+  {
+    Evenement? evenement = await evenementRepository.GetByIdAsync(id);
+    if (evenement == null) throw new KeyNotFoundException("Impossible de cloturer un événement introuvable");
+    if (evenement.StatutEvenement != StatutEvenement.EnCours) throw new Exception("Seul un événement en cours peut etre cloturé");
+    
+    evenement.StatutEvenement = StatutEvenement.Terminé;
+    evenement.DateMaj = DateTime.UtcNow;
+    await evenementRepository.UpdateAsync(evenement);
+    logger.LogInformation("L'événement {id} est maintenant TERMINE", id);
+  }
 
   #region Methode ValidationRegle
 

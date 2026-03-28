@@ -10,4 +10,6 @@ public interface IEvenementService
   Task<EvenementDetailsResponseDto> GetByIdAsync(Guid id);
   Task<EvenementDetailsResponseDto> UpdateAsync(Guid id, EvenementRequestDto dto);
   Task DeleteAsync(Guid id);
+  Task DemarrerAsync(Guid id);
+  Task CloturerAsync(Guid id);
 }
