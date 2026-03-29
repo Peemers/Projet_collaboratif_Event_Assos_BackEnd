@@ -147,6 +147,8 @@ public class EvenementService(
 
   #endregion
 
+  #region AnnulerAsync
+
   public async Task AnnulerAsync(Guid id)
   {
     Evenement? evenement = await evenementRepository.GetByIdAsync(id);
@@ -162,6 +164,8 @@ public class EvenementService(
     await evenementRepository.UpdateAsync(evenement);
     logger.LogInformation("L'événement {id} est maintenant ANNULé", id);
   }
+
+  #endregion
 
   #region Methode ValidationRegle
 

@@ -37,6 +37,32 @@ public class EvenementController(IEvenementService evenementService, ILogger<Eve
 
   #endregion
 
+  #region Update
+
+  [HttpPut("{id:guid}", Name = "UpdateEvenement")]
+  [EndpointSummary("Mise à jour d'événement")]
+  [EndpointDescription("Permet de modifier les informations des événements identifiés par id si celui-ci est encore au statut <EnAttente> ")]
+  [Authorize(Roles = "Admin")]
+  [EnableRateLimiting("RateLimitAdmin")]
+  public async Task<IActionResult> Update(Guid id, EvenementRequestDto dto)
+  {
+    try
+    {
+      EvenementDetailsResponseDto result = await evenementService.UpdateAsync(id, dto);
+      return Ok(result);
+    }
+    catch (KeyNotFoundException ex)
+    {
+      return NotFound(new { message = ex.Message });
+    }
+    catch (Exception ex)
+    {
+      return BadRequest(new { message = ex.Message });
+    }
+  }
+
+  #endregion
+
   #region GetLatest
 
   [HttpGet("latest")]

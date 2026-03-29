@@ -16,7 +16,9 @@ public class CategorieController(
 {
   #region GetAll
 
-  [HttpGet]
+  [HttpGet(Name = "GetAll")]
+  [EndpointSummary("Récupérer tous les événements")]
+  [EndpointDescription("Retourne une liste simplifiée de tous les événements pour l'affichage en grille.")]
   [AllowAnonymous]
   public async Task<ActionResult<IEnumerable<CategorieResponseDto>>> GetAll()
   {
