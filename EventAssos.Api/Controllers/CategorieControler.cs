@@ -4,6 +4,7 @@ using EventAssos.Core.Interfaces.Services;
 using EventAssos.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace EventAssos.Controllers;
 
@@ -19,6 +20,7 @@ public class CategorieController(
   [HttpGet(Name = "GetAll")]
   [EndpointSummary("Récupérer tous les événements")]
   [EndpointDescription("Retourne une liste simplifiée de tous les événements pour l'affichage en grille.")]
+  [EnableRateLimiting("NormalRequest")]
   [AllowAnonymous]
   public async Task<ActionResult<IEnumerable<CategorieResponseDto>>> GetAll()
   {
@@ -30,7 +32,10 @@ public class CategorieController(
 
   #region GetById
 
-  [HttpGet("{id}")]
+  [HttpGet("{id}", Name = "GetById")]
+  [EndpointSummary("Trouver un catégorie avec son id")]
+  [EndpointDescription("Permet de trouver un catégorie en DB grace à son id")]
+  [EnableRateLimiting("NormalRequest")]
   [AllowAnonymous]
   public async Task<ActionResult<CategorieResponseDto>> GetById(int id)
   {
@@ -42,8 +47,11 @@ public class CategorieController(
 
   #region Create
 
-  [HttpPost]
+  [HttpPost(Name =  "Create")]
   [Authorize(Roles = "Admin")]
+  [EndpointSummary("Créer une nouvelles Catégorie")]
+  [EndpointDescription("Permet à l'admin de créer une nouvelle catégorie")]
+  [EnableRateLimiting("AdminRequest")]
   public async Task<ActionResult<CategorieResponseDto>> Create(CategorieRequestDto dto)
   {
     try
@@ -61,8 +69,11 @@ public class CategorieController(
 
   #region UpDate
 
-  [HttpPut("{id}")]
+  [HttpPut("{id}", Name = "Update")]
   [Authorize(Roles = "Admin")]
+  [EndpointSummary("Changer le nom d'une catégorie")]
+  [EndpointDescription("Permet à l'admin de modifier le nom d'une catégorie")]
+  [EnableRateLimiting("AdminRequest")]
   public async Task<IActionResult> Update(int id, CategorieRequestDto dto)
   {
     try
@@ -80,8 +91,11 @@ public class CategorieController(
 
   #region Delete
 
-  [HttpDelete("{id}")]
+  [HttpDelete("{id}", Name = "Delete")]
   [Authorize(Roles = "Admin")]
+  [EndpointSummary("Supprimer une catégorie")]
+  [EndpointDescription("Permet à l'admin de supprimer une catégorie")]
+  [EnableRateLimiting("AdminRequest")]
   public async Task<IActionResult> Delete(int id)
   {
     try

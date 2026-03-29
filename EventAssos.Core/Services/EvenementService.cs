@@ -115,10 +115,10 @@ public class EvenementService(
     Evenement? evenement = await evenementRepository.GetAvecDetailsAsync(id);
 
     if (evenement == null) throw new KeyNotFoundException("L'événement est introuvable");
-    
+
     if (evenement.StatutEvenement != StatutEvenement.EnAttente) throw new Exception("Seul un événement en 'attente' peut etre démarré");
     if (evenement.DateDebut > DateTime.UtcNow) throw new Exception($"L'événement ne peut pas démarrer avant le {evenement.DateDebut}");
-    
+
     int nbInscrit = evenement.Inscriptions.Count(i => !i.EstEnAttente);
     if (nbInscrit < evenement.NbMin) throw new Exception($"Le nombre minimum de participants : {evenement.NbMin} n'est pas atteint. Actuellement : {nbInscrit}");
 
@@ -140,7 +140,7 @@ public class EvenementService(
 
     evenement.StatutEvenement = StatutEvenement.Terminé;
     evenement.DateMaj = DateTime.UtcNow;
-    
+
     await evenementRepository.UpdateAsync(evenement);
     logger.LogInformation("L'événement {id} est maintenant TERMINE", id);
   }
@@ -160,14 +160,15 @@ public class EvenementService(
 
     evenement.StatutEvenement = StatutEvenement.Annulé;
     evenement.DateMaj = DateTime.UtcNow;
-    
+
     await evenementRepository.UpdateAsync(evenement);
     logger.LogInformation("L'événement {id} est maintenant ANNULé", id);
   }
 
   #endregion
 
-  #region Methode ValidationRegle
+
+  #region ValidationRegle
 
   private void ValidationRegles(EvenementRequestDto dto)
   {
@@ -187,4 +188,6 @@ public class EvenementService(
   }
 
   #endregion
+  
+  //todo public async GetStatsAsync
 }

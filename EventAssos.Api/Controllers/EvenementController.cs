@@ -14,7 +14,9 @@ public class EvenementController(IEvenementService evenementService, ILogger<Eve
 {
   #region Create
 
-  [HttpPost]
+  [HttpPost (Name =  "CreateEvenement")]
+  [EndpointSummary("Créer un événement")]
+  [EndpointDescription("Permet à l'admin de créer un événement")]
   [Authorize(Roles = "Admin")]
   [EnableRateLimiting("RateLimitAdmin")]
   public async Task<ActionResult<EvenementDetailsResponseDto>> Create(EvenementRequestDto dto)
@@ -179,7 +181,9 @@ public class EvenementController(IEvenementService evenementService, ILogger<Eve
 
   #region GetById
 
-  [HttpGet("{id:guid}")]
+  [HttpGet("{id:guid}", Name =  "GetEvenementById")]
+  [EndpointSummary("Trouver un événement avec son id")]
+  [EndpointDescription("Permet de trouver un événement avec son Guid Id")]
   [AllowAnonymous]
   [EnableRateLimiting("auth-limit")]
   public async Task<ActionResult<EvenementDetailsResponseDto>> GetById(Guid id)
@@ -196,4 +200,6 @@ public class EvenementController(IEvenementService evenementService, ILogger<Eve
   }
 
   #endregion
+  
+  //todo public async Task<> GetStats
 }

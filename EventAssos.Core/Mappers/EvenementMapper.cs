@@ -93,4 +93,6 @@ public static class EvenementMapper
         .ToList(),
     };
   }
+  
+  //todo EvenementStatsResponseDto ToStatsResponse...
 }

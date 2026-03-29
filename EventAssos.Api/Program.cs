@@ -65,6 +65,7 @@ try
   builder.Services.AddScoped<IInscriptionRepository, InscriptionRepository>();
   builder.Services.AddScoped<IInscriptionService, InscriptionService>();
   builder.Services.AddScoped<ICategorieRepository, CategorieRepository>();
+  builder.Services.AddScoped<ICategorieService, CategorieService>();
   builder.Services.AddScoped<IEvenementRepository, EvenementRepository>();
   builder.Services.AddScoped<IEvenementService, EvenementService>();
   
@@ -110,8 +111,15 @@ try
     });
     options.AddFixedWindowLimiter("RateLimitAdmin", opt =>
     {
-      opt.PermitLimit = 10;
-      opt.Window = TimeSpan.FromMinutes(1);
+      opt.PermitLimit = 15;
+      opt.Window = TimeSpan.FromSeconds(10);
+      opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+      opt.QueueLimit = 0;
+    });
+    options.AddFixedWindowLimiter("NormalRequest", opt =>
+    {
+      opt.PermitLimit = 5;
+      opt.Window = TimeSpan.FromSeconds(15);
       opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
       opt.QueueLimit = 0;
     });
