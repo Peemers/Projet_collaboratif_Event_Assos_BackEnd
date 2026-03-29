@@ -7,14 +7,11 @@ using Microsoft.AspNetCore.RateLimiting;
 
 namespace EventAssos.Controllers;
 
-
-
 [Route("api/[controller]")]
 [ApiController]
 [Authorize]
 public class EvenementController(IEvenementService evenementService, ILogger<EvenementController> logger) : ControllerBase
 {
-
   #region Create
 
   [HttpPost]
@@ -25,9 +22,7 @@ public class EvenementController(IEvenementService evenementService, ILogger<Eve
     try
     {
       EvenementDetailsResponseDto result = await evenementService.CreateAsync(dto);
-      logger.LogInformation("Nouvelle Categorie : {nom} avec l'id : {id} créée en DB",result.Nom, result.Id);
       return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
-      
     }
     catch (Exception ex)
     {
@@ -63,15 +58,121 @@ public class EvenementController(IEvenementService evenementService, ILogger<Eve
 
   #endregion
 
+  #region Delete
+
+  [HttpDelete("{id:guid}", Name = "DeleteEvenement")]
+  [EndpointSummary("Supprimer un événement")]
+  [EndpointDescription("Permet de supprimer un événement si celui-ci est encore au statut <EnAttente>")]
+  [Authorize(Roles = "Admin")]
+  [EnableRateLimiting("RateLimitAdmin")]
+  public async Task<IActionResult> Delete(Guid id)
+  {
+    try
+    {
+      await evenementService.DeleteAsync(id);
+      return NoContent();
+    }
+    catch (KeyNotFoundException ex)
+    {
+      return NotFound(new { message = ex.Message });
+    }
+    catch (Exception ex)
+    {
+      return BadRequest(new { message = ex.Message });
+    }
+  }
+
+  #endregion
+
   #region GetLatest
 
-  [HttpGet("latest")]
+  [HttpGet("latest", Name = "GetLatest")]
+  [EndpointSummary("Afficher les 10 derniers événements de la liste")]
+  [EndpointDescription("Permet d'afficher les 10 derniers événements de la liste")]
   [AllowAnonymous]
   [EnableRateLimiting("auth-limit")]
   public async Task<ActionResult<IEnumerable<EvenementShortResponseDto>>> GetLatest()
   {
     IEnumerable<EvenementShortResponseDto> result = await evenementService.GetLatestAsync();
     return Ok(result);
+  }
+
+  #endregion
+
+  #region Demarrer
+
+  [HttpPatch("{id:guid}/demarrer", Name = "DemarrerEvenement")]
+  [Authorize(Roles = "Admin")]
+  [EndpointSummary("Démarrer un événement")]
+  [EndpointDescription("Démarrer un événement tant que celui-ci est encore au statut <EnAttente>")]
+  [EnableRateLimiting("RateLimitAdmin")]
+  public async Task<IActionResult> Demarrer(Guid id)
+  {
+    try
+    {
+      await evenementService.DemarrerAsync(id);
+      return NoContent();
+    }
+    catch (KeyNotFoundException ex)
+    {
+      return NotFound(new { message = ex.Message });
+    }
+    catch (Exception e)
+    {
+      return BadRequest(new { message = e.Message });
+    }
+  }
+
+  #endregion
+
+  #region Cloturer
+
+  [HttpPatch("{id:guid}/cloturer", Name = "CloturerEvenement")]
+  [Authorize(Roles = "Admin")]
+  [EndpointSummary("Cloturer un événement")]
+  [EndpointDescription("Cloturer un événement tant que celui-ci est encore au statut <EnCours>")]
+  [EnableRateLimiting("RateLimitAdmin")]
+  public async Task<IActionResult> Cloturer(Guid id)
+  {
+    try
+    {
+      await evenementService.CloturerAsync(id);
+      return NoContent();
+    }
+    catch (KeyNotFoundException ex)
+    {
+      return NotFound(new { message = ex.Message });
+    }
+    catch (Exception ex)
+    {
+      return BadRequest(new { message = ex.Message });
+    }
+  }
+
+  #endregion
+
+  #region Annuler
+
+  [HttpPatch("{id:guid}/annuler", Name = "AnnulerEvenement")]
+  [Authorize(Roles = "Admin")]
+  [EndpointSummary("Annuler un événement")]
+  [EndpointDescription("Permet d'annuler un événement tant que celui-ci n'est pas <Terminé> ou deja <Annulé>")]
+  [EnableRateLimiting("RateLimitAdmin")]
+  public async Task<IActionResult> Annuler(Guid id)
+  {
+    try
+    {
+      await evenementService.AnnulerAsync(id);
+      return NoContent();
+    }
+    catch (KeyNotFoundException ex)
+    {
+      return NotFound(new { message = ex.Message });
+    }
+    catch (Exception ex)
+    {
+      return BadRequest(new { message = ex.Message });
+    }
   }
 
   #endregion
@@ -96,4 +197,3 @@ public class EvenementController(IEvenementService evenementService, ILogger<Eve
 
   #endregion
 }
-
