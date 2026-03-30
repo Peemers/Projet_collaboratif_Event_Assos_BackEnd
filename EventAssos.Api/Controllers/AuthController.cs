@@ -17,6 +17,8 @@ public class AuthController(IAuthService authService) : ControllerBase
   #region Register
 
   [HttpPost("register")]
+  [EndpointSummary("Créer un nouveau membre / Register")]
+  [EndpointDescription("Permet aux utilisateurs ou à l'admin de créer un nouveau compte")]
   public async Task<ActionResult<AuthResponseDto>> RegisterAsync(RegisterRequestDto registerDto)
   {
     try
@@ -35,6 +37,8 @@ public class AuthController(IAuthService authService) : ControllerBase
   #region Login
 
   [HttpPost("login")]
+  [EndpointSummary("Se Connecter")]
+  [EndpointDescription("Permet aux utilisateurs ou à l'admin de se connecter à leur(s) compte(s)")]
   public async Task<ActionResult<AuthResponseDto>> LoginAsync(LoginRequestDto loginDto)
   {
     try

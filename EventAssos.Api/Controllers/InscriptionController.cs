@@ -3,6 +3,7 @@ using EventAssos.Core.DTOs.Response.EvenementResponseDtos;
 using EventAssos.Core.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace EventAssos.Controllers;
 
@@ -13,8 +14,11 @@ public class InscriptionController(IInscriptionService inscriptionService, ILogg
 {
   #region CreateInscription
 
-  [HttpPost("{evenementId:guid}")]
+  [HttpPost("{evenementId:guid}",  Name = "CreateInscription")]
+  [EndpointSummary("Inscrire à un événement")]
+  [EndpointDescription("Permet aux membres et à l'admin d'inscrire un membre à un événement")]
   [Authorize(Roles = "Membre")]
+  [EnableRateLimiting("auth-limit")]
   public async Task<ActionResult<EvenementDetailsResponseDto>> CreateInscription(Guid evenementId)
   {
     string? membreClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -46,8 +50,11 @@ public class InscriptionController(IInscriptionService inscriptionService, ILogg
 
   #region DeleteInscription
 
-  [HttpDelete("{evenementId:guid}")]
+  [HttpDelete("{evenementId:guid}", Name =  "DeleteInscription")]
+  [EndpointSummary("Désinscrire d'un évenement")]
+  [EndpointDescription("Permet à un membre ou à l'admin de désinscrire un membre d'un événement")]
   [Authorize(Roles = "Membre")]
+  [EnableRateLimiting("auth-limit")]
   public async Task<IActionResult> DeleteInscription(Guid evenementId)
   {
     string? membreClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
