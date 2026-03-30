@@ -9,8 +9,8 @@ using Microsoft.Extensions.Logging;
 namespace EventAssos.Core.Services;
 
 public class InscriptionService(
-  IInscriptionRepository inscriptionRepository, 
-  IEvenementRepository evenementRepository, 
+  IInscriptionRepository inscriptionRepository,
+  IEvenementRepository evenementRepository,
   IMembreRepository membreRepository,
   ILogger<InscriptionService> logger) : IInscriptionService
 {
@@ -23,7 +23,7 @@ public class InscriptionService(
 
     if (evenement == null) throw new KeyNotFoundException("L'événement demandé n'a pas été trouvé");
     if (membre == null) throw new KeyNotFoundException("Le membre demandé n'existe pas");
-    
+
     Inscription? estExistant = await inscriptionRepository.GetInscriptionExisteAsync(membreId, evenementId);
     if (estExistant != null)
     {
@@ -35,32 +35,19 @@ public class InscriptionService(
       throw new Exception("Vous ne pouvez plus vous inscrire pour cet événement (date d'inscription dépassée)");
     }
 
-    if (evenement.StatutEvenement == StatutEvenement.Annulé)
+    if (evenement.StatutEvenement != StatutEvenement.EnAttente)
     {
-      throw new Exception("Impossible de vous inscrire : événement annulé");
+      throw new Exception("Inscription possible uniquement sur les événement en attente");
     }
 
-    if (evenement.StatutEvenement == StatutEvenement.Terminé)
-    {
-      throw new Exception("Impossible de vous inscrire : événement deja terminé ");
-    }
-    
     int nombreInscrits = evenement.Inscriptions.Count(i => !i.EstEnAttente);
-    bool estEnAttente = true;
-
-    if (nombreInscrits < evenement.NbMax)
-    {
-      estEnAttente = false;
-    }
-    else if (evenement.ListeAttenteActive)
-    {
-      estEnAttente = true;
-    }
-    else
+    
+    if (nombreInscrits >= evenement.NbMax && !evenement.ListeAttenteActive)
     {
       throw new Exception("L'événement est complet");
     }
-
+    bool estEnAttente = nombreInscrits >= evenement.NbMax;
+    
     Inscription nouvelleInscription = new Inscription()
     {
       Id = Guid.NewGuid(),
@@ -69,7 +56,7 @@ public class InscriptionService(
       InscriptionDate = DateTime.UtcNow,
       EstEnAttente = estEnAttente,
     };
-    
+
     await inscriptionRepository.AddAsync(nouvelleInscription);
     evenement.Inscriptions.Add(nouvelleInscription);
 
@@ -82,37 +69,41 @@ public class InscriptionService(
 
   public async Task AnnulerInscriptionAsync(Guid evenementId, Guid membreId)
   {
+    Evenement? evenement = await evenementRepository.GetAvecDetailsAsync(evenementId);
+
+    if (evenement == null) throw new KeyNotFoundException("L'événement demandé n'existe pas");
+    if (evenement.StatutEvenement != StatutEvenement.EnAttente) throw new Exception("La désinscription n'est possible que sur un événement en attente");
+
     Inscription? inscription = await inscriptionRepository.GetInscriptionExisteAsync(membreId, evenementId);
     if (inscription == null)
     {
       throw new KeyNotFoundException("Impossible d'annulé : inscription introuvable");
     }
+
     bool etaitEnAttente = inscription.EstEnAttente;
-    Guid ASupprimer = inscription.Id;
-    
-    await inscriptionRepository.DeleteAsync(ASupprimer);
-    logger.LogInformation("inscription {id} supprimée", ASupprimer);
+    Guid aSupprimer = inscription.Id;
+
+    await inscriptionRepository.DeleteAsync(aSupprimer);
+    logger.LogInformation("inscription {id} supprimée", aSupprimer);
 
     if (!etaitEnAttente)
     {
-      Evenement? evenement = await evenementRepository.GetAvecDetailsAsync(evenementId);
-      if (evenement != null)
-      {
-        Inscription? prochainAttente = evenement.Inscriptions
-          .Where(i => i.EstEnAttente)
-          .OrderBy(i => i.InscriptionDate)
-          .FirstOrDefault();
+      Inscription? prochainAttente = evenement.Inscriptions
+        .Where(i => i.EstEnAttente)
+        .OrderBy(i => i.InscriptionDate)
+        .FirstOrDefault();
 
-        if (prochainAttente != null)
-        {
-          prochainAttente.EstEnAttente = false;
-          await inscriptionRepository.UpdateAsync(prochainAttente);
-          
-          logger.LogInformation("Le membre {MembreId} est promu en liste principale pour l'événement {EvenementId}", prochainAttente.MembreId, evenement.Id);
-        }
+      if (prochainAttente != null)
+      {
+        prochainAttente.EstEnAttente = false;
+        await inscriptionRepository.UpdateAsync(prochainAttente);
+
+        logger.LogInformation("Le membre {MembreId} est promu en liste principale pour l'événement {EvenementId}", prochainAttente.MembreId, evenement.Id);
       }
     }
   }
-
   #endregion
 }
+
+
+

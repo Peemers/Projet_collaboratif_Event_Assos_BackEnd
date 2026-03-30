@@ -29,6 +29,20 @@ public static class EvenementMapper
     };
   }
 
+  public static void UpdateEntity(this Evenement entity, EvenementRequestDto dto)
+  {
+    entity.Nom = dto.Nom;
+    entity.Description = dto.Description;
+    entity.Lieu = dto.Lieu;
+    entity.DateDebut = dto.DateDebut;
+    entity.DateFin = dto.DateFin;
+    entity.NbMin = dto.NbMin;
+    entity.NbMax = dto.NbMax;
+    entity.ListeAttenteActive = dto.ListeAttenteActive;
+    entity.DateLimiteInscription = dto.DateLimiteInscription;
+    entity.DateMaj = DateTime.UtcNow;
+  }
+
   public static EvenementShortResponseDto ToShortResponseDto(this Evenement evenement)
   {
     return new EvenementShortResponseDto()
@@ -45,7 +59,7 @@ public static class EvenementMapper
       NbMin = evenement.NbMin,
       NbMax = evenement.NbMax,
       Categories = evenement.Categories.Select(c => c.Nom).ToList(),
-      Statut = evenement.StatutEvenement.ToString(), //tostring, la prop dans le dto est une string}
+      Statut = evenement.StatutEvenement.ToString(), //tostring, la prop dans le dto est une string
       DateLimiteInscription = evenement.DateLimiteInscription,
       ListeAttenteActive = evenement.ListeAttenteActive,
     };
@@ -72,13 +86,15 @@ public static class EvenementMapper
         .Where(i => !i.EstEnAttente)
         .OrderBy(i => i.InscriptionDate)
         .Select(i => i.Membre.Pseudo)
-          .ToList(),
-      
+        .ToList(),
+
       ListeAttente = evenement.Inscriptions
         .Where(i => i.EstEnAttente)
         .OrderBy(i => i.InscriptionDate)
         .Select(i => i.Membre.Pseudo)
-          .ToList(),
+        .ToList(),
     };
   }
+  
+  //todo EvenementStatsResponseDto ToStatsResponse...
 }
