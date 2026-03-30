@@ -2,5 +2,12 @@
 
 public class EvenementStatsResponseDto
 {
-  //todo le dto pour les statistiques des événements
+  public Guid Id { get; set; }
+  public string Nom { get; set; } = string.Empty;
+  public int NbMin { get; set; } 
+  public int NbMax { get; set; }
+  public int NbInscrits { get; set; }
+  public int NbListeAttente { get; set; }
+  public double TauxRemplissage { get; set; }
+  public bool EstViable { get; set; }
 }
