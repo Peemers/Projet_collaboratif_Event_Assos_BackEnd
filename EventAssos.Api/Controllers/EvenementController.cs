@@ -179,10 +179,12 @@ public class EvenementController(IEvenementService evenementService, ILogger<Eve
 
   #endregion
 
-  [HttpPost(Name = "GetStats")]
-  [Authorize(Roles = "Admin")]
+  #region GetSats
+
+  [HttpGet(Name = "GetStats")]
+  [AllowAnonymous]
   [EndpointSummary("Consulter les statistiques d'événement")]
-  [EndpointDescription("Permet à l'admin de consulter les statistiques des événements et donc de vérifier la viabilité")]
+  [EndpointDescription("Permet à tout le monde de consulter les statistiques des événements et donc de vérifier la viabilité")]
   [EnableRateLimiting("RateLimitAdmin")]
   public async Task<ActionResult<EvenementStatsResponseDto>> GetStats(Guid id)
   {
@@ -200,6 +202,37 @@ public class EvenementController(IEvenementService evenementService, ILogger<Eve
       return BadRequest(new { message = ex.Message });
     }
   }
+
+  #endregion
+  
+  #region GetBlobalStats
+  
+  [HttpGet(Name = "GetGlobalStatsAsync")]
+  [AllowAnonymous]
+  [EndpointSummary("Consulter les statistique globales des événements")]
+  [EndpointDescription("Permet à tout le monde de consulter les statistique globales des événements avec leur(s) catégorie(s) etc")]
+  [EnableRateLimiting("NormalRequest")]
+
+  
+
+  public async Task<ActionResult<EvenementGlobalStatsResponseDto>> GetGlobalStatsAsync()
+  {
+    try
+    {
+      EvenementGlobalStatsResponseDto result = await evenementService.GetGlobalStatsAsync();
+      return Ok(result);
+    }
+    catch (KeyNotFoundException ex)
+    {
+      throw new KeyNotFoundException(ex.Message);
+    }
+    catch (Exception e)
+    {
+      throw new Exception(e.Message);
+    }
+  }
+
+  #endregion
 
   #region GetById
 

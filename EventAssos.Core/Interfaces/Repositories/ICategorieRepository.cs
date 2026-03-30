@@ -5,4 +5,6 @@ namespace EventAssos.Core.Interfaces.Repositories;
 public interface ICategorieRepository : IBaseRepository<Categorie, int>
 {
   Task<bool> ExistByNameAsync (string nom);
+  Task<IEnumerable<Categorie>> GetAllCatAndEvenementAsync();
+
 }

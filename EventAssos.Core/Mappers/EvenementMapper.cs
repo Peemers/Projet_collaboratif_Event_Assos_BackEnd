@@ -1,5 +1,6 @@
 ﻿using EventAssos.Core.DTOs.Request.EvenementRequestDtos;
 using EventAssos.Core.DTOs.Response.EvenementResponseDtos;
+using EventAssos.Core.Services;
 using EventAssos.Domain.Entities;
 using EventAssos.Domain.Enums;
 
@@ -116,6 +117,19 @@ public static class EvenementMapper
       NbListeAttente = nbAttente,
       TauxRemplissage = taux,
       EstViable = nbInscrits >= evenement.NbMin
+    };
+  }
+
+  public static EvenementGlobalStatsResponseDto ToGlobalStatsResponseDto(this IEnumerable<Categorie> categories, int totalEvenements)
+  {
+    return new EvenementGlobalStatsResponseDto()
+    {
+      TotalEvenements = totalEvenements,
+      RepartitionCategories = categories.Select(c => new CategorieCountDto
+      {
+        CategorieNom = c.Nom,
+        CategorieNombre = c.Evenements.Count
+      }).ToList()
     };
   }
 }

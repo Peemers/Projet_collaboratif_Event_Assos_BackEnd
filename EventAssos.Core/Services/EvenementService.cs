@@ -129,6 +129,19 @@ public class EvenementService(
 
   #endregion
 
+  #region GetStatsGlobalAsync
+
+  public async Task<EvenementGlobalStatsResponseDto> GetGlobalStatsAsync()
+  {
+    IEnumerable<Categorie> categories = await categorieRepository.GetAllCatAndEvenementAsync();
+    IEnumerable<Evenement> tousLesEvenements = await evenementRepository.GetAllAsync();
+    int total = tousLesEvenements.Count();
+    EvenementGlobalStatsResponseDto result = categories.ToGlobalStatsResponseDto(total);
+    return result;
+  }
+
+  #endregion
+
   #region DemarrerAsync
 
   public async Task DemarrerAsync(Guid id)
