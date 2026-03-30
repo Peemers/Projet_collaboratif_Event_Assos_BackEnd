@@ -32,7 +32,7 @@ public class AuthService(
     
     string token = jwtService.GenererToken(membre);
     
-    log.LogInformation($"Connexion réussie de {loginDto.Email}, token attribué");
+    log.LogInformation("Connexion réussie de {Email}, token attribué", loginDto.Email);
     return new AuthResponseDto
     {
       Token = token,

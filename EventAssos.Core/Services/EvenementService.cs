@@ -24,10 +24,11 @@ public class EvenementService(
     foreach (int id in dto.CategorieIds)
     {
       Categorie? categorie = await categorieRepository.GetByIdAsync(id);
-      if (categorie != null)
+      if (categorie == null)
       {
-        nouvelEvenement.Categories.Add(categorie);
+        throw new Exception("Événement non créé - Categorie invalide");
       }
+      nouvelEvenement.Categories.Add(categorie);
     }
 
     Evenement evenement = await evenementRepository.AddAsync(nouvelEvenement);

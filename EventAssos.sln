@@ -8,7 +8,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventAssos.Domain", "EventA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventAssos.Infrastructure", "EventAssos.Infrastructure\EventAssos.Infrastructure.csproj", "{D1FDCD1F-8E60-4BAA-8A33-2C501C91EE30}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventAssos.Tests", "EventAssos.Tests\EventAssos.Tests.csproj", "{77FE1B37-2CF3-40E4-82FB-1962F7475FE0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventAssos.Tests", "EventAssos.Tests\EventAssos.Tests.csproj", "{CF12C42B-E013-4522-873D-158B30C0ABC5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,9 +32,9 @@ Global
 		{D1FDCD1F-8E60-4BAA-8A33-2C501C91EE30}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D1FDCD1F-8E60-4BAA-8A33-2C501C91EE30}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D1FDCD1F-8E60-4BAA-8A33-2C501C91EE30}.Release|Any CPU.Build.0 = Release|Any CPU
-		{77FE1B37-2CF3-40E4-82FB-1962F7475FE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{77FE1B37-2CF3-40E4-82FB-1962F7475FE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{77FE1B37-2CF3-40E4-82FB-1962F7475FE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{77FE1B37-2CF3-40E4-82FB-1962F7475FE0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF12C42B-E013-4522-873D-158B30C0ABC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF12C42B-E013-4522-873D-158B30C0ABC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF12C42B-E013-4522-873D-158B30C0ABC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF12C42B-E013-4522-873D-158B30C0ABC5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
