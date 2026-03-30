@@ -179,6 +179,28 @@ public class EvenementController(IEvenementService evenementService, ILogger<Eve
 
   #endregion
 
+  [HttpPost(Name = "GetStats")]
+  [Authorize(Roles = "Admin")]
+  [EndpointSummary("Consulter les statistiques d'événement")]
+  [EndpointDescription("Permet à l'admin de consulter les statistiques des événements et donc de vérifier la viabilité")]
+  [EnableRateLimiting("RateLimitAdmin")]
+  public async Task<ActionResult<EvenementStatsResponseDto>> GetStats(Guid id)
+  {
+    try
+    {
+      EvenementStatsResponseDto result = await evenementService.GetStatsAsync(id);
+      return Ok(result);
+    }
+    catch (KeyNotFoundException ex)
+    {
+      return NotFound(new { message = ex.Message });
+    }
+    catch (Exception ex)
+    {
+      return BadRequest(new { message = ex.Message });
+    }
+  }
+
   #region GetById
 
   [HttpGet("{id:guid}", Name =  "GetEvenementById")]
@@ -200,6 +222,4 @@ public class EvenementController(IEvenementService evenementService, ILogger<Eve
   }
 
   #endregion
-  
-  //todo public async Task<> GetStats
 }
