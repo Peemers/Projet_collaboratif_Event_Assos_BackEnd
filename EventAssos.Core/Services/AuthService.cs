@@ -72,11 +72,10 @@ public class AuthService(
     
     Membre nouveauMembre = registerDto.ToEntity(hashedPassword);
 
+    await membreRepository.AddAsync(nouveauMembre);
     
     log.LogInformation($"Attribution token et connexion de : {registerDto.Email} - {registerDto.Pseudo}");
     string token = jwtService.GenererToken(nouveauMembre);
-
-    await membreRepository.AddAsync(nouveauMembre);
 
     return new AuthResponseDto
     {

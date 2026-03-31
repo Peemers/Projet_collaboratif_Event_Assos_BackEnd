@@ -8,6 +8,6 @@ public class EvenementGlobalStatsResponseDto
 
 public class CategorieCountDto
 {
-  public string CategorieNom { get; set; } = string.Empty;
-  public int CategorieNombre {get; set; }
+  public string CategorieNom { get; init; } = string.Empty;
+  public int CategorieNombre {get; init; }
 }

@@ -2,6 +2,6 @@
 
 public class AuthResponseDto
 {
-  public required string Token { get; set; }
-  public required string Pseudo { get; set; }
+  public required string Token { get; init; }
+  public required string Pseudo { get; init; }
 }
