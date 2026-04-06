@@ -80,6 +80,7 @@ public class InscriptionService(
       throw new KeyNotFoundException("Impossible d'annulé : inscription introuvable");
     }
 
+    evenement.Inscriptions.Remove(inscription);
     bool etaitEnAttente = inscription.EstEnAttente;
     Guid aSupprimer = inscription.Id;
 
