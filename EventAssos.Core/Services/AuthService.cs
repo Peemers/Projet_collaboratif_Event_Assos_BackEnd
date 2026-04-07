@@ -5,6 +5,7 @@ using EventAssos.Core.Interfaces.Services;
 using EventAssos.Core.Interfaces.Tools;
 using EventAssos.Core.Mappers;
 using EventAssos.Domain.Entities;
+using EventAssos.Domain.Enums;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -37,6 +38,8 @@ public class AuthService(
     {
       Token = token,
       Pseudo = membre.Pseudo,
+      Role = membre.Role,
+      Id = membre.Id
     };
   }
 
@@ -80,7 +83,9 @@ public class AuthService(
     return new AuthResponseDto
     {
       Token = token,
-      Pseudo = registerDto.Pseudo,
+      Pseudo = nouveauMembre.Pseudo,
+      Role = nouveauMembre.Role,
+      Id = nouveauMembre.Id,
     };
   }
 

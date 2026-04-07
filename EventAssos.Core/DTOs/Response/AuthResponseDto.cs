@@ -7,8 +7,8 @@ public class AuthResponseDto
   public required string Token { get; init; }
   public required string Pseudo { get; init; }
   
-  //public required Guid Id { get; init; } Proposition de modification pour pouvoir atteindre le role et l'id facilement
+  public required Guid Id { get; init; } //Proposition de modification pour pouvoir atteindre le role et l'id facilement
   
-  //public required Roles Role {get; init; }
+  public required Roles Role {get; init; }
   
 }
