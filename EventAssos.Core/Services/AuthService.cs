@@ -15,6 +15,8 @@ public class AuthService(
   IMembreRepository membreRepository,
   IPasswordHasher passwordHasher,
   IJwtService jwtService,
+  IEmailService emailService,
+  IConfiguration config,
   ILogger<AuthService> log) : IAuthService
 {
   #region LoginAsync
@@ -89,5 +91,30 @@ public class AuthService(
     };
   }
 
+  #endregion
+  
+  #region ResetPasswordAsync
+
+  public async Task ResetPasswordAsync(string email)
+  {
+    Membre? membres = await  membreRepository.GetByEmailAsync(email);
+    if (membres == null) return;
+    
+    string token = jwtService.GenererToken(membres);
+    
+    string? baseUrl = config["AppSettings:ClientUrl"];
+    string lien = $"{baseUrl}/reset-password?token={token}&email={email}";
+
+    string message = $@"<h2>Reinitialisation de mot de passe</h2>
+                        <p>Bonjour {membres.Pseudo}</p>
+                        <p>Cliquez sur le lien pour réinitialiser votre mot de passe
+                        <a href='{lien}' style='padding: 10px; background: #007bff; color: white; text-decoration: none; border-radius: 5px;'>Changer mon mot de passe</a>
+                        <p>Ce lien expirera dans 2 heures.</p>";
+
+    await emailService.EnvoyerMailAsync(email, "Changement de mot de passe - Event'Assos", message);
+    log.LogInformation("Email de réinitialisation envoyé à {email}", email);
+  }
+  
+  
   #endregion
 }

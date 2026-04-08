@@ -1,12 +1,15 @@
-﻿using Castle.Core.Logging;
+﻿using Castle.Core.Configuration;
 using EventAssos.Core.DTOs.Request.MembreRequestDtos;
 using EventAssos.Core.Interfaces.Repositories;
+using EventAssos.Core.Interfaces.Services;
 using EventAssos.Core.Interfaces.Tools;
 using EventAssos.Core.Services;
 using EventAssos.Domain.Entities;
 using EventAssos.Domain.Enums;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
+using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
+
 
 namespace EventAssos.Tests;
 
@@ -15,15 +18,16 @@ public class AuthServiceTesting
   private readonly IMembreRepository _membreRepository = Substitute.For<IMembreRepository>();
   private readonly IPasswordHasher _passwordHasher = Substitute.For<IPasswordHasher>();
   private readonly IJwtService _jwtService = Substitute.For<IJwtService>();
+  private readonly IEmailService _emailService = Substitute.For<IEmailService>();
+  private readonly IConfiguration _config = Substitute.For<IConfiguration>();
   private readonly ILogger<AuthService> _logger = Substitute.For<ILogger<AuthService>>();
 
   private readonly AuthService _authService;
   
   public AuthServiceTesting()
   {
-    _authService = new AuthService(_membreRepository, _passwordHasher, _jwtService, _logger);
+    _authService = new AuthService(_membreRepository, _passwordHasher, _jwtService, _emailService, _config, _logger );
   }
-
   [Fact]
   public async Task LoginAsync_ReturnToken_LoginOk()
   {
