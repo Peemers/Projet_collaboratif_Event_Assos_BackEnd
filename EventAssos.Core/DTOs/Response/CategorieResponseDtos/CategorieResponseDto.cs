@@ -2,6 +2,6 @@
 
 public class CategorieResponseDto
 {
-  public int Id { get; set; }
-  public required string Nom { get; set; }
+  public int Id { get; init; }
+  public required string Nom { get; init; }
 }

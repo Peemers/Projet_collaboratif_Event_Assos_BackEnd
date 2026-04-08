@@ -1,5 +1,6 @@
 ﻿using EventAssos.Core.DTOs.Request.EvenementRequestDtos;
 using EventAssos.Core.DTOs.Response.EvenementResponseDtos;
+using EventAssos.Core.Services;
 using EventAssos.Domain.Entities;
 using EventAssos.Domain.Enums;
 
@@ -95,6 +96,40 @@ public static class EvenementMapper
         .ToList(),
     };
   }
-  
-  //todo EvenementStatsResponseDto ToStatsResponse...
+
+  public static EvenementStatsResponseDto ToStatsResponseDto(this Evenement evenement)
+  {
+    int nbInscrits = evenement.Inscriptions.Count(i => !i.EstEnAttente);
+    int nbAttente = evenement.Inscriptions.Count(i => i.EstEnAttente);
+    double taux = 0;
+    if (evenement.NbMax > 0)
+    {
+      taux = Math.Round((double)nbInscrits / evenement.NbMax * 100, 2);
+    }
+
+    return new EvenementStatsResponseDto()
+    {
+      Id = evenement.Id,
+      Nom = evenement.Nom,
+      NbMin = evenement.NbMin,
+      NbMax = evenement.NbMax,
+      NbInscrits = nbInscrits,
+      NbListeAttente = nbAttente,
+      TauxRemplissage = taux,
+      EstViable = nbInscrits >= evenement.NbMin
+    };
+  }
+
+  public static EvenementGlobalStatsResponseDto ToGlobalStatsResponseDto(this IEnumerable<Categorie> categories, int totalEvenements)
+  {
+    return new EvenementGlobalStatsResponseDto()
+    {
+      TotalEvenements = totalEvenements,
+      RepartitionCategories = categories.Select(c => new CategorieCountDto
+      {
+        CategorieNom = c.Nom,
+        CategorieNombre = c.Evenements.Count
+      }).ToList()
+    };
+  }
 }

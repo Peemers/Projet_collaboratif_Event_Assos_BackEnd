@@ -12,4 +12,11 @@ public class CategorieRepository(EventAssosDbContext context) : BaseRepository<C
     return await Context.Categories
       .AnyAsync(c => c.Nom.ToLower() == nom.ToLower());
   }
+
+  public async Task<IEnumerable<Categorie>> GetAllCatAndEvenementAsync()
+  {
+    return await Context.Categories
+      .Include(c => c.Evenements)
+      .ToListAsync();
+  }
 }

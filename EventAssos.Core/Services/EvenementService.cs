@@ -28,6 +28,7 @@ public class EvenementService(
       {
         throw new Exception("Événement non créé - Categorie invalide");
       }
+
       nouvelEvenement.Categories.Add(categorie);
     }
 
@@ -95,6 +96,10 @@ public class EvenementService(
 
     return evenements.Select(e => e.ToShortResponseDto());
   }
+  
+  #endregion
+
+  #region GetByIdAsync
 
   public async Task<EvenementDetailsResponseDto> GetByIdAsync(Guid id)
   {
@@ -105,6 +110,34 @@ public class EvenementService(
     }
 
     return result.ToDetailsResponseDto();
+  }
+
+  #endregion
+
+  #region GetStatsAsync
+
+  public async Task<EvenementStatsResponseDto> GetStatsAsync(Guid id)
+  {
+    Evenement? result = await evenementRepository.GetAvecDetailsAsync(id);
+    if (result == null)
+    {
+      throw new KeyNotFoundException("L'événement demandé n'existe pas");
+    }
+
+    return result.ToStatsResponseDto();
+  }
+
+  #endregion
+
+  #region GetStatsGlobalAsync
+
+  public async Task<EvenementGlobalStatsResponseDto> GetGlobalStatsAsync()
+  {
+    IEnumerable<Categorie> categories = await categorieRepository.GetAllCatAndEvenementAsync();
+    IEnumerable<Evenement> tousLesEvenements = await evenementRepository.GetAllAsync();
+    int total = tousLesEvenements.Count();
+    EvenementGlobalStatsResponseDto result = categories.ToGlobalStatsResponseDto(total);
+    return result;
   }
 
   #endregion
@@ -168,7 +201,6 @@ public class EvenementService(
 
   #endregion
 
-
   #region ValidationRegle
 
   private void ValidationRegles(EvenementRequestDto dto)
@@ -190,5 +222,4 @@ public class EvenementService(
 
   #endregion
   
-  //todo public async GetStatsAsync
 }
