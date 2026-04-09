@@ -55,6 +55,7 @@ public class InscriptionService(
       EvenementId = evenementId,
       InscriptionDate = DateTime.UtcNow,
       EstEnAttente = estEnAttente,
+      Membre = membre
     };
 
     await inscriptionRepository.AddAsync(nouvelleInscription);
