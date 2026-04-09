@@ -17,4 +17,19 @@ public static class EmailTemplate
          <p>À bientôt sur Event - Assos !</p>
          </div>";
   }
+  
+  public static string ConfirmationInscription(string pseudo, string titreEvent, bool estEnAttente)
+  {
+    string statut = estEnAttente 
+      ? "Vous êtes sur <strong>liste d'attente</strong>." 
+      : "Votre inscription est <strong>confirmée</strong>.";
+
+    return $@"
+        <div style='font-family: Arial, sans-serif;'>
+            <h1>Bonjour {pseudo} !</h1>
+            <p>Vous venez de vous inscrire à l'événement : <strong>{titreEvent}</strong>.</p>
+            <p>Statut : {statut}</p>
+            <p>À bientôt sur Event'Assos !</p>
+        </div>";
+  }
 }

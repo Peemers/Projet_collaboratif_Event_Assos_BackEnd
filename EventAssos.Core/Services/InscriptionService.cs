@@ -2,6 +2,7 @@
 using EventAssos.Core.Interfaces.Repositories;
 using EventAssos.Core.Interfaces.Services;
 using EventAssos.Core.Mappers;
+using EventAssos.Core.Template;
 using EventAssos.Domain.Entities;
 using EventAssos.Domain.Enums;
 using Microsoft.Extensions.Logging;
@@ -12,6 +13,7 @@ public class InscriptionService(
   IInscriptionRepository inscriptionRepository,
   IEvenementRepository evenementRepository,
   IMembreRepository membreRepository,
+  IEmailService emailService,
   ILogger<InscriptionService> logger) : IInscriptionService
 {
   #region InscrireMembre
@@ -41,13 +43,14 @@ public class InscriptionService(
     }
 
     int nombreInscrits = evenement.Inscriptions.Count(i => !i.EstEnAttente);
-    
+
     if (nombreInscrits >= evenement.NbMax && !evenement.ListeAttenteActive)
     {
       throw new Exception("L'événement est complet");
     }
+
     bool estEnAttente = nombreInscrits >= evenement.NbMax;
-    
+
     Inscription nouvelleInscription = new Inscription()
     {
       Id = Guid.NewGuid(),
@@ -55,10 +58,26 @@ public class InscriptionService(
       EvenementId = evenementId,
       InscriptionDate = DateTime.UtcNow,
       EstEnAttente = estEnAttente,
+      Membre = membre
     };
 
     await inscriptionRepository.AddAsync(nouvelleInscription);
     evenement.Inscriptions.Add(nouvelleInscription);
+
+
+    string emailDestinataire = membre.Email;
+    string pseudoDestinataire = membre.Pseudo;
+    string titreEvenement = evenement.Nom;
+
+    try
+    {
+      string message = EmailTemplate.ConfirmationInscription(pseudoDestinataire, titreEvenement, estEnAttente);
+      await emailService.EnvoyerMailAsync(emailDestinataire, "Confirmation d'inscription", message);
+    }
+    catch (Exception e)
+    {
+      logger.LogError(e, "Erreur envoi mail pour {Email}", emailDestinataire);
+    }
 
     return evenement.ToDetailsResponseDto();
   }
@@ -85,6 +104,7 @@ public class InscriptionService(
     Guid aSupprimer = inscription.Id;
 
     await inscriptionRepository.DeleteAsync(aSupprimer);
+    
     logger.LogInformation("inscription {id} supprimée", aSupprimer);
 
     if (!etaitEnAttente)
@@ -103,8 +123,6 @@ public class InscriptionService(
       }
     }
   }
+
   #endregion
 }
-
-
-
