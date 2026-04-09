@@ -9,5 +9,7 @@ public interface IAuthService
   
   Task<AuthResponseDto> RegisterAsync(RegisterRequestDto registerDto);
   
-  Task ResetPasswordAsync(string email);
+  Task PasswordPerduAsync(string email);
+  
+  Task ResetPasswordAsync(string email, string token, string newPassword);
 }

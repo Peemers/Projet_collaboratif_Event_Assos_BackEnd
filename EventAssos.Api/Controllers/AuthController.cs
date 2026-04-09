@@ -55,21 +55,35 @@ public class AuthController(IAuthService authService) : ControllerBase
   #endregion
 
   #region resetPassword
+
   [HttpPost("reset-password")]
   [EndpointSummary("Reinitialisation mot de passe")]
   [EndpointDescription("Permet à un utilisateur de recovery son mot de passe")]
-  public async Task<IActionResult> ResetPassword(ResetPasswordDto dto)
+  public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto dto)
   {
     try
     {
-      await authService.ResetPasswordAsync(dto.Password);
-      return Ok(dto.Password);
+      await authService.ResetPasswordAsync(dto.Email, dto.Token, dto.Password);
+      return Ok(new { message = "Votre mot de passe été modifié avec succes" });
     }
     catch (Exception ex)
     {
       return BadRequest(ex.Message);
     }
   }
+
+  #endregion
+
+  #region PasswordPerdu
+
+  [HttpPost("password-perdu")]
+  [EndpointSummary("Demander un lien de reinitialisation")]
+  [EndpointDescription("Permet à l'utilisateur de demander un lien de reinitialisation")]
+  public async Task<IActionResult> PasswordPerdu([FromBody] string email)
+  {
+    await authService.PasswordPerduAsync(email);
+    return Ok(new { message = "Si cet email correspond à un compte vous receverez un mail de reinitialisation" });
+  }
+
   #endregion
 }
-
