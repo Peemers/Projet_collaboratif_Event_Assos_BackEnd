@@ -68,6 +68,7 @@ try
   builder.Services.AddScoped<ICategorieService, CategorieService>();
   builder.Services.AddScoped<IEvenementRepository, EvenementRepository>();
   builder.Services.AddScoped<IEvenementService, EvenementService>();
+  builder.Services.AddScoped<IEmailService, EmailService>();
   
   builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
   builder.Services.AddScoped<IMembreRepository, MembreRepository>();

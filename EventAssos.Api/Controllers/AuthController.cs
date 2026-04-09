@@ -48,9 +48,28 @@ public class AuthController(IAuthService authService) : ControllerBase
     }
     catch (Exception e)
     {
-      return Unauthorized(e.Message);
+      return BadRequest(e.Message);
     }
   }
 
   #endregion
+
+  #region resetPassword
+  [HttpPost("reset-password")]
+  [EndpointSummary("Reinitialisation mot de passe")]
+  [EndpointDescription("Permet à un utilisateur de recovery son mot de passe")]
+  public async Task<IActionResult> ResetPassword(ResetPasswordDto dto)
+  {
+    try
+    {
+      await authService.ResetPasswordAsync(dto.Password);
+      return Ok(dto.Password);
+    }
+    catch (Exception ex)
+    {
+      return BadRequest(ex.Message);
+    }
+  }
+  #endregion
 }
+
