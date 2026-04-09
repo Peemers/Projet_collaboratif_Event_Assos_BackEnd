@@ -13,6 +13,13 @@ public class MembreRepository(EventAssosDbContext context) : BaseRepository<Memb
       .FirstOrDefaultAsync(m => m.Email == email);
   }
 
+  public async Task<List<string>> GetAllEmailsAsync()
+  {
+    return await  Context.Membres
+      .Select(m => m.Email)
+      .ToListAsync();
+  }
+
   public async Task<bool> EmailExistsAsync(string email)
   {
     return await Context.Membres.AnyAsync(m => m.Email == email);
@@ -22,4 +29,6 @@ public class MembreRepository(EventAssosDbContext context) : BaseRepository<Memb
   {
     return await Context.Membres.AnyAsync(m => m.Pseudo == pseudo);
   }
+
+  
 }

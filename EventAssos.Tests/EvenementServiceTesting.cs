@@ -14,13 +14,14 @@ public class EvenementServiceTesting
 {
   private readonly ICategorieRepository _categorieRepository = Substitute.For<ICategorieRepository>();
   private readonly IEvenementRepository _evenementRepository = Substitute.For<IEvenementRepository>();
+  private readonly IMembreRepository _membreRepository = Substitute.For<IMembreRepository>();
   private readonly ILogger<EvenementService> _logger = Substitute.For<ILogger<EvenementService>>();
   
   private readonly EvenementService _evenementService;
 
   public EvenementServiceTesting()
   {
-    _evenementService = new EvenementService(_evenementRepository, _categorieRepository, _logger);
+    _evenementService = new EvenementService(_evenementRepository, _categorieRepository, _membreRepository, _logger);
   }
   
   [Fact]
