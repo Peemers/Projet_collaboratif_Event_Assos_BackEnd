@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
 using EventAssos.Core.Interfaces.Repositories;
 using EventAssos.Core.Interfaces.Services;
@@ -73,7 +74,11 @@ try
   builder.Services.AddScoped<IMembreRepository, MembreRepository>();
   builder.Services.AddScoped<IJwtService, JwtService>();
   builder.Services.AddScoped<IAuthService, AuthService>();
-  builder.Services.AddControllers();
+  builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+      options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
   builder.Services.AddOpenApi();
 
   #endregion
@@ -104,21 +109,21 @@ try
   {
     options.AddFixedWindowLimiter("auth-limit", opt =>
     {
-      opt.PermitLimit = 5;
+      opt.PermitLimit = 15;
       opt.Window = TimeSpan.FromMinutes(1);
       opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
       opt.QueueLimit = 0;
     });
     options.AddFixedWindowLimiter("RateLimitAdmin", opt =>
     {
-      opt.PermitLimit = 15;
+      opt.PermitLimit = 30;
       opt.Window = TimeSpan.FromSeconds(10);
       opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
       opt.QueueLimit = 0;
     });
     options.AddFixedWindowLimiter("NormalRequest", opt =>
     {
-      opt.PermitLimit = 5;
+      opt.PermitLimit = 30;
       opt.Window = TimeSpan.FromSeconds(15);
       opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
       opt.QueueLimit = 0;
