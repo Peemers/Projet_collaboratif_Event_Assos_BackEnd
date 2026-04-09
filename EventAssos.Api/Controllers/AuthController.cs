@@ -79,9 +79,9 @@ public class AuthController(IAuthService authService) : ControllerBase
   [HttpPost("password-perdu")]
   [EndpointSummary("Demander un lien de reinitialisation")]
   [EndpointDescription("Permet à l'utilisateur de demander un lien de reinitialisation")]
-  public async Task<IActionResult> PasswordPerdu([FromBody] string email)
+  public async Task<IActionResult> PasswordPerdu([FromBody] PasswordPerduRequestDto dto)
   {
-    await authService.PasswordPerduAsync(email);
+    await authService.PasswordPerduAsync(dto.Email);
     return Ok(new { message = "Si cet email correspond à un compte vous receverez un mail de reinitialisation" });
   }
 
