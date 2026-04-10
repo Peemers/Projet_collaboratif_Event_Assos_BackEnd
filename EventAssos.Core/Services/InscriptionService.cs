@@ -62,7 +62,7 @@ public class InscriptionService(
     };
 
     await inscriptionRepository.AddAsync(nouvelleInscription);
-    evenement.Inscriptions.Add(nouvelleInscription);
+    //evenement.Inscriptions.Add(nouvelleInscription);
 
 
     string emailDestinataire = membre.Email;
