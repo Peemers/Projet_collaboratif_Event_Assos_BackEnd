@@ -82,6 +82,7 @@ public static class EvenementMapper
       Categories = evenement.Categories.Select(c => c.Nom).ToList(),
       ListeAttenteActive = evenement.ListeAttenteActive,
       DateLimiteInscription = evenement.DateLimiteInscription,
+      NbInscrits = evenement.Inscriptions.Count(i => !i.EstEnAttente),
 
       MembresInscrits = evenement.Inscriptions
         .Where(i => !i.EstEnAttente)
