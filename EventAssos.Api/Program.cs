@@ -105,21 +105,21 @@ try
   {
     options.AddFixedWindowLimiter("auth-limit", opt =>
     {
-      opt.PermitLimit = 25;
+      opt.PermitLimit = 35;
       opt.Window = TimeSpan.FromMinutes(1);
       opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
       opt.QueueLimit = 0;
     });
     options.AddFixedWindowLimiter("RateLimitAdmin", opt =>
     {
-      opt.PermitLimit = 30;
+      opt.PermitLimit = 40;
       opt.Window = TimeSpan.FromSeconds(10);
       opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
       opt.QueueLimit = 0;
     });
     options.AddFixedWindowLimiter("NormalRequest", opt =>
     {
-      opt.PermitLimit = 25;
+      opt.PermitLimit = 35;
       opt.Window = TimeSpan.FromSeconds(15);
       opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
       opt.QueueLimit = 0;
