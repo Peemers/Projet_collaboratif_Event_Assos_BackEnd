@@ -1,4 +1,5 @@
-﻿using EventAssos.Core.DTOs.Request.MembreRequestDtos;
+﻿using System.IdentityModel.Tokens.Jwt;
+using EventAssos.Core.DTOs.Request.MembreRequestDtos;
 using EventAssos.Core.DTOs.Response;
 using EventAssos.Core.Interfaces.Repositories;
 using EventAssos.Core.Interfaces.Services;
@@ -15,6 +16,8 @@ public class AuthService(
   IMembreRepository membreRepository,
   IPasswordHasher passwordHasher,
   IJwtService jwtService,
+  IEmailService emailService,
+  IConfiguration config,
   ILogger<AuthService> log) : IAuthService
 {
   #region LoginAsync
@@ -90,4 +93,71 @@ public class AuthService(
   }
 
   #endregion
+  
+  #region PasswordPerduAsync
+
+  public async Task PasswordPerduAsync(string email)
+  {
+    Membre? membres = await  membreRepository.GetByEmailAsync(email);
+    if (membres == null) return;
+    
+    string jwtToken = jwtService.GenererToken(membres);
+    
+    string? baseUrl = config["AppSettings:ClientUrl"];
+    string lien = $"{baseUrl}/reset-password?token={jwtToken}&email={email}";
+
+    string message = $@"<h2>Reinitialisation de mot de passe</h2>
+                        <p>Bonjour {membres.Pseudo}</p>
+                        <p>Cliquez sur le lien pour réinitialiser votre mot de passe</p>
+                        <a href='{lien}' style='padding: 10px; background: #007bff; color: white; text-decoration: none; border-radius: 5px;'>Changer mon mot de passe</a>
+                        <p>Ce lien expirera dans 2 heures.</p>";
+
+    await emailService.EnvoyerMailAsync(email, "Changement de mot de passe - Event'Assos", message);
+    log.LogInformation("Email de réinitialisation envoyé à {email}", email);
+  }
+  #endregion
+
+  #region ResetPasswordAsync
+
+  public async Task ResetPasswordAsync(string email, string token, string newPassword)
+  {
+    Membre? membre = await membreRepository.GetByEmailAsync(email);
+    
+    if (membre == null)
+    {
+      throw new Exception("Utilisateur introuvable.");
+    }
+
+    try 
+    {
+      JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
+        
+      JwtSecurityToken jwtToken = tokenHandler.ReadJwtToken(token);
+        
+      string userIdInToken = jwtToken.Subject;
+        
+      if (userIdInToken != membre.Id.ToString())
+      {
+        throw new Exception("Ce lien de réinitialisation est invalide pour ce compte.");
+      }
+      
+      if (jwtToken.ValidTo < DateTime.UtcNow)
+      {
+        throw new Exception("Le lien a expiré (validité de 2 heures).");
+      }
+    }
+    catch (Exception)
+    {
+      throw new Exception("Le jeton de sécurité est corrompu ou invalide.");
+    }
+    
+    membre.Password = passwordHasher.Hash(newPassword);
+    
+    await membreRepository.UpdateAsync(membre);
+    
+    log.LogInformation("Mot de passe réinitialisé avec succès pour {Email}", email);
+  }
+
+  #endregion
+  
 }

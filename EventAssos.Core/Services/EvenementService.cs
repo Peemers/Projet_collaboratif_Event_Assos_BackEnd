@@ -1,8 +1,10 @@
 ﻿using EventAssos.Core.DTOs.Request.EvenementRequestDtos;
+using EventAssos.Core.DTOs.Request.MembreRequestDtos;
 using EventAssos.Core.DTOs.Response.EvenementResponseDtos;
 using EventAssos.Core.Interfaces.Repositories;
 using EventAssos.Core.Interfaces.Services;
 using EventAssos.Core.Mappers;
+using EventAssos.Core.Template;
 using EventAssos.Domain.Entities;
 using EventAssos.Domain.Enums;
 using Microsoft.Extensions.Logging;
@@ -12,6 +14,7 @@ namespace EventAssos.Core.Services;
 public class EvenementService(
   IEvenementRepository evenementRepository,
   ICategorieRepository categorieRepository,
+  IMembreRepository membreRepository,
   ILogger<EvenementService> logger) : IEvenementService
 {
   #region CreateAsync
@@ -35,8 +38,11 @@ public class EvenementService(
     Evenement evenement = await evenementRepository.AddAsync(nouvelEvenement);
 
     logger.LogInformation("Événement {Nom} créé avec l'id : {Id}", evenement.Nom, evenement.Id);
-
+    
+    List<string> emailsMembres = await membreRepository.GetAllEmailsAsync();
+    
     return evenement.ToDetailsResponseDto();
+    
   }
 
   #endregion
