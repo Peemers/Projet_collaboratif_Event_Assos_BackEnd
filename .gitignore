@@ -20,3 +20,5 @@ Thumbs.db
 # logs
 
 EventAssos.Api/logs
+
+EventAssos.Api/appsettings.Development.json
