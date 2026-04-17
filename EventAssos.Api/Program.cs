@@ -4,6 +4,7 @@ using EventAssos.Core.Interfaces.Repositories;
 using EventAssos.Core.Interfaces.Services;
 using EventAssos.Core.Interfaces.Tools;
 using EventAssos.Core.Services;
+using EventAssos.Infrastructure.AzureTools;
 using EventAssos.Infrastructure.DataBase.Context;
 using EventAssos.Infrastructure.Repositories;
 using EventAssos.Infrastructure.Security;
@@ -17,10 +18,20 @@ using Serilog.Events;
 
 #region LoggerInitiation
 
+var configuration = new ConfigurationBuilder()
+  .SetBasePath(Directory.GetCurrentDirectory())
+  .AddJsonFile("appsettings.json")
+  .AddEnvironmentVariables()
+  .Build();
+
 Log.Logger = new LoggerConfiguration() //création logger avant tout le reste dans program
   .MinimumLevel.Override("Microsoft", LogEventLevel.Information) //niveau d'info
   .Enrich.FromLogContext() //
   .WriteTo.Console()
+  .WriteTo.AzureBlobStorage(
+    connectionString: configuration["ConnectionString:AzureBlobStorageString"],
+    storageContainerName:"Api Logs",
+    storageFileName:"log.txt")
   .CreateBootstrapLogger(); //log de démarrage
 
 #endregion
@@ -69,6 +80,7 @@ try
   builder.Services.AddScoped<IEvenementRepository, EvenementRepository>();
   builder.Services.AddScoped<IEvenementService, EvenementService>();
   builder.Services.AddScoped<IEmailService, EmailService>();
+  builder.Services.AddScoped<IBlobService, BlobStorageService>();
   
   builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
   builder.Services.AddScoped<IMembreRepository, MembreRepository>();

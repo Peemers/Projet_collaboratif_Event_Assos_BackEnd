@@ -1,4 +1,6 @@
 ﻿using System.Net.Mail;
+using System.Text.Json;
+using Azure.Messaging.ServiceBus;
 using EventAssos.Core.Interfaces.Services;
 using Microsoft.Extensions.Configuration;
 using MimeKit;
@@ -10,19 +12,13 @@ public class EmailService(IConfiguration config) : IEmailService
 {
   public async Task EnvoyerMailAsync(string email, string subject, string message)
   {
-    MimeMessage emailMessage = new MimeMessage();
-    emailMessage.From.Add(new MailboxAddress("Event'Assos Admin", config["SmtpSettings:SenderEmail"]!));
-    emailMessage.To.Add(new MailboxAddress("",email));
-    emailMessage.Subject = subject;
-    emailMessage.Body = new TextPart("html") { Text = message };
-
-    using SmtpClient client = new SmtpClient();
-
-    await client.ConnectAsync(config["SmtpSettings:Server"], int.Parse(config["SmtpSettings:Port"]!), false);
-    await client.AuthenticateAsync(config["SmtpSettings:Username"], config["SmtpSettings:Password"]);
-    await client.SendAsync(emailMessage);
-    await client.DisconnectAsync(true);
-
-
+    await using var client = new ServiceBusClient(config["ServiceBusConnectionString"]);
+    ServiceBusSender sender = client.CreateSender("email-queue");
+    
+    var emailPayload = new {To = email, Subject = subject, Message = message};
+    string jsonPayload = JsonSerializer.Serialize(emailPayload);
+    
+    ServiceBusMessage busMessage = new ServiceBusMessage(jsonPayload);
+    await sender.SendMessageAsync(busMessage);
   }
 }
